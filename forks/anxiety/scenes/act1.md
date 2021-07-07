@@ -170,7 +170,7 @@ h: Neyse hadi karaktere geri dönelim.
 Game.clearText();
 ```
 
-n4: _ANKSİYETENİN_ FALAN FİLAN _KORKUNA_ EN BENZERİ FALAN FİLAN NASIL GİDİYOR BİLİYORSUN
+n4: _ANKSİYETENİN_ FALAN FİLAN _KORKUNA_ EN BENZERİ FİLAN FALAN NASIL GİDİYOR BİLİYORSUN
 
 ```
 sfx("squeak");
@@ -284,7 +284,7 @@ Game.OVERRIDE_TEXT_SPEED = 1.5;
 
 b: Eğer toplum-bedenine katkıda bulunmuyorsak, o zaman toplum-parazitiyiz!
 
-b: Toplum-bedeni, toplum-parazitlerini öldürmek için ilaç için toplum-doktora gidecek, sonra biz--
+b: Toplum-bedeni, toplum-parazitlerini öldürmek için toplum-doktora gidecek, sonra biz--
 
 ```
 bb({body:"panic", mouth:"normal", eyes:"fear"});
