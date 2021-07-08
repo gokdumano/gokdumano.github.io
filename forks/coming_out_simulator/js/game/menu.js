@@ -12,17 +12,17 @@ function Start(){
 
 	//////////////////////////////
 
-	N("<b>COMING OUT SIMULATOR 2014</b>");
-	N("A half-true game about half-truths.");
-	N("Hey there, player. Welcome to this game, I guess.");
-	N("What would you like to do now?");
+	N("<b>AÇILMA SİMÜLASYONU 2014</b>");
+	N("Kısmen doğrular hakkında kısmen gerçek bir oyun.");
+	N("Merhaba oyuncu. Oyuna hoşgeldin, sanırım.");
+	N("Şimdi ne yapmak istersin?");
 
 	Choose({
-		"Let's play this thing!": Play,
-		"Who are you? (Credits)": function(){
+		"Hadi oynayalım şu oyunu!!": Play,
+		"Kimsin sen? (Jenerik)": function(){
 			Credits("Who are you?");
 		},
-		"Hm, tell me more. (About This Game)": function(){
+		"Hm, devam et. (Bu oyun hakkında)": function(){
 			About("Hm, tell me more.");
 		}
 	});
