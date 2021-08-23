@@ -65,7 +65,7 @@ publish("act3",["roofhong",7]);
 publish("act3-alpha", ["dizzyhong",0]);
 ```
 
-h2: CESARETLİK!
+h2: CESARET!
 
 ```
 publish("act3-alpha", ["dizzyhong",1]);

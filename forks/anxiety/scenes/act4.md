@@ -1295,7 +1295,7 @@ b: Ah, Evet! Vay! Ne büyük bir rahatlama!
 
 `bb({ body:"one_up", eyes:"sexy", mouth:"normal" })`
 
-b: "Doktor, sadece *bu seni nasıl hissettirdi* sorusuna 870₺/saat ödemek beni kaygılandırıyor."
+b: Sadece "*bu seni nasıl hissettirdi*" sorusuna 870₺/saat ödemek beni kaygılandırıyor.
 
 `bb({ body:"paw", eyes:"closed", mouth:"narrow" })`
 

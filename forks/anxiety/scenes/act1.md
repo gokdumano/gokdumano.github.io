@@ -876,7 +876,7 @@ hong({eyes:"anger", mouth:"anger"});
 Game.OVERRIDE_TEXT_SPEED = 1.5;
 ```
 
-h: Kapa çeneni, kapa çeneni, tamam gitmeyeceğim! Tanrı!
+h: Kapa çeneni, kapa çeneni, tamam gitmeyeceğim! Tanrım!
 
 (#act1f)
 
