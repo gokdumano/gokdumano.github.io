@@ -37,12 +37,9 @@ request.onupgradeneeded = function(event) {
 
 async function fetchDataAndStore(db) {
   try {
-    const response = await fetch(apiUrl, {mode: 'no-cors'});
-    if (!response.ok) {
-      throw new Error('Network response was not ok ' + response.statusText);
-    }
+    const response = await fetch(apiUrl, {Host: 'api.ibb.gov.tr'});
     const stations = await response.json();
-
+    console.log(stations);
     // Verileri veritabanına eklemek için işlem yapılır
     const transaction = db.transaction(['AQIStations'], 'readwrite');
     const objectStore = transaction.objectStore('AQIStations');
