@@ -37,7 +37,7 @@ request.onupgradeneeded = function(event) {
 
 async function fetchDataAndStore(db) {
   try {
-    const response = await fetch(apiUrl, {Host: 'api.ibb.gov.tr'});
+    const response = await fetch(apiUrl, {mode: 'no-cors'});
     const stations = await response.json();
     console.log(stations);
     // Verileri veritabanına eklemek için işlem yapılır
