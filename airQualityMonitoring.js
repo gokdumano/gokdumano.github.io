@@ -37,7 +37,7 @@ request.onupgradeneeded = function(event) {
 
 async function fetchDataAndStore(db) {
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl, {mode: 'no-cors'});
     if (!response.ok) {
       throw new Error('Network response was not ok ' + response.statusText);
     }
