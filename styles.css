@@ -13,6 +13,15 @@ body, html {
     height: calc(100% - 40px); /* Duyuru şeridi için yer bırak */
 }
 
+/* Metro İstanbul Logosu Stili */
+.metro-istanbul-logo {
+    width: 100%; /* Logonun genişliği sol bölümün genişliğine uygun */
+    max-width: 100%; /* Maksimum genişlik (sol bölümün genişliğini aşmaz) */
+    height: auto; /* Oranları koru */
+    margin-bottom: 20px; /* Alt boşluk */
+    display: block; /* Blok seviyesinde eleman olarak davranır */
+}
+
 /* Sol Bölüm */
 .left-panel {
     width: 30%;
@@ -101,6 +110,14 @@ body, html {
     font-weight: bold;
 }
 
+.bilet-fiyatlari-content .type-header {
+    background-color: #e0e0e0;
+    color: #333;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
 .bilet-fiyatlari-content td:first-child {
     font-weight: bold;
     color: #003366; /* Lacivert yazı rengi */
@@ -130,6 +147,76 @@ body, html {
     font-size: 14px;
 }
 
+.calisma-saatleri strong {
+    font-weight: bold;
+}
+
+.calisma-saatleri u {
+    text-decoration: underline;
+}
+
+/* Bilgi Butonu Stili */
+.info-button {
+    background-color: #003366; /* Lacivert arka plan */
+    color: white; /* Beyaz yazı rengi */
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-button:hover {
+    background-color: #990000; /* Kırmızı arka plan (hover) */
+}
+
+/* Modal Stili */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Yarı saydam arka plan */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.close-button {
+    background-color: #990000; /* Kırmızı arka plan */
+    color: white; /* Beyaz yazı rengi */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.close-button:hover {
+    background-color: #003366; /* Lacivert arka plan (hover) */
+}
+
 /* Sağ Bölüm (Harita) */
 .right-panel {
     flex: 1;
@@ -139,6 +226,14 @@ body, html {
 .map {
     width: 100%;
     height: 100%;
+}
+
+.metro-logo {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 100px;
+    height: auto;
 }
 
 /* Duyuru Şeridi */
@@ -157,4 +252,54 @@ body, html {
 
 .duyuru-seridi marquee {
     width: 100%;
+}
+
+/* Child Page Popup Stili */
+.child-page-popup {
+    display: none; /* Başlangıçta gizli */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 400px;
+    max-height: 80vh;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.popup-content {
+    padding: 20px;
+}
+
+.popup-content h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #003366; /* Lacivert başlık */
+}
+
+.document-content {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333; /* Siyah yazı rengi */
+}
+
+.document-content p {
+    margin-bottom: 15px;
+}
+
+.close-button {
+    background-color: #990000; /* Kırmızı arka plan */
+    color: white; /* Beyaz yazı rengi */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.close-button:hover {
+    background-color: #003366; /* Lacivert arka plan (hover) */
 }
