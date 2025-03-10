@@ -1,67 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  
-  <title>ISS Tracker</title>
-  <link rel="stylesheet" href="styles.css" type="text/css" />
-  
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery.soap/jquery.soap.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
-  
-  <title>Fetch  JSON from API and map lat lon</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İstanbul Metro Ağı</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.3.0/ol.css">
 </head>
-
-
 <body>
-<div>
-      <h1>ISS Tracker</h1>
-<!-- our Map goes here -->
-      <div id="map">
-</div>
-<!-- Details about ISS -->
-      <div id="details">
-        <!-- Time -->
-        <div>
-          Time:
-          <span class="time"></span>
+    <div class="container">
+        <!-- Sol Bölüm -->
+        <div class="left-panel" id="leftPanel">
+            <!-- Metro İstanbul Logosu -->
+            <img src="imgs/metro-istanbul-logo.png" alt="Metro İstanbul Logo" class="metro-istanbul-logo" id="metroLogo">
+            <div class="hat-list">
+                <h2>Hat Kodu</h2>
+                <select id="hatSecimi">
+                    <!-- Hatlar buraya dinamik olarak eklenecek -->
+                </select>
+            </div>
+            <div class="calisma-saatleri">
+                <h4>Çalışma Saatleri</h4>
+                <div id="calismaSaatleri">
+                    <!-- Çalışma saatleri buraya dinamik olarak eklenecek -->
+                </div>
+            </div>
+            <div class="durak-listesi">
+                <h3>Duraklar</h3>
+                <ul id="durakListesi">
+                    <!-- Duraklar buraya dinamik olarak eklenecek -->
+                </ul>
+            </div>
+            <div class="bilet-fiyatlari">
+                <h4>Bilet Fiyatları</h4>
+                <div id="biletFiyatlari">
+                    <!-- Bilet fiyatları buraya dinamik olarak eklenecek -->
+                </div>
+            </div>
         </div>
-        <!-- Latitude -->
-        <div>
-          Latitude:
-          <span class="latitude"></span>
+
+        <!-- Sağ Bölüm (Harita) -->
+        <div class="right-panel">
+            <div id="map" class="map"></div>
         </div>
-        <!-- Longitude -->
-        <div>
-          Longitude:
-          <span class="longitude"></span>
-        </div>
-        <!-- Speed -->
-        <div>
-          Speed:
-          <span class="speed"></span>
-        </div>
-        <!-- Altitude -->
-        <div>
-          Altitude:
-          <span class="altitude"></span>
-        </div>
-        <!-- Visibility -->
-        <div>
-          Visibility:
-          <span class="visibility"></span>
-        </div>
-      </div>
     </div>
-<!-- Javascript for our Map (Mandatory) -->
-    <!-- Make sure you put this AFTER Leaflet's CSS and before script.js -->
-    <!-- <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script> -->
-	<!-- <script src="https://cdn.jsdelivr.net/npm/ol@v10.4.0/dist/ol.js"></script> -->
-    <!-- <script src="script.js" type="text/javascript"></script> -->
-    <!-- <script src="sinyalizeKavsakBilgileri.js" type="text/javascript"></script> -->
-    <script src="airQualityMonitoring.js" type="text/javascript"></script>
-  </body>
+
+    <!-- Duyuru Şeridi -->
+    <div class="duyuru-seridi">
+        <marquee id="duyuruMarquee">Duyurular burada gösterilecek...</marquee>
+    </div>
+
+    <!-- Child Page (Popup) -->
+    <div class="child-page-popup" id="childPagePopup">
+        <div class="popup-content">
+            <h1 id="popupTitle">Metro İstanbul Hakkında</h1>
+            <div class="document-content" id="popupContent">
+                <!-- İçerik buraya dinamik olarak eklenecek -->
+            </div>
+            <button class="close-button" id="closePopupButton">Kapat</button>
+        </div>
+    </div>
+
+    <!-- OpenLayers CDN ve Script -->
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.3.0/dist/ol.js"></script>
+    <script src="script.js"></script>
+</body>
 </html>
