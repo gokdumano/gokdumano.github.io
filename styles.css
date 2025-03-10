@@ -1,56 +1,160 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
+/* Genel Stil */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    overflow: hidden;
 }
-/* body */
-body {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(to right, #00c6ff, #0072ff);
-  font-family: monospace;
-  font-size: 0.8rem;
-  text-align: center;
+
+.container {
+    display: flex;
+    height: calc(100% - 40px); /* Duyuru şeridi için yer bırak */
 }
-/* h1 */
-h1 {
-  margin-bottom: 30px;
-  font-size: 3rem;
-  color: #fff;
+
+/* Sol Bölüm */
+.left-panel {
+    width: 30%;
+    min-width: 20%;
+    max-width: 50%;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    resize: horizontal; /* Kullanıcıların boyutlandırmasına izin ver */
 }
-/* #map */
-/* this is mandatory */
-#map {
-  width: 1000px;
-  height: 500px;
-  box-shadow: 7px -2px 8px -1px rgba(0,0,0,0.7);
-  border-top-right-radius: 3px;
-  border-top-left-radius: 3px;
+
+.left-panel h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
 }
-/* #details */
-#details {
-  background-color: #2B32B2;
-  padding: 10px;
-  color: #fff;
-  display: flex;
-  width: 1000px;
-  max-width: 1000px;
-  box-shadow: 7px -2px 8px -1px rgba(0,0,0,0.7);
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
+
+.hat-list, .durak-listesi, .calisma-saatleri, .bilet-fiyatlari {
+    margin-bottom: 20px;
 }
-/* all div inside #details */
-#details div {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+
+.hat-list select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
-/* all span */
-span {
-  font-size: 1rem;
-  margin-top: 10px;
+
+.durak-listesi ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.durak-listesi ul li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.calisma-saatleri p, .bilet-fiyatlari p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Bilet Fiyatları Container Stili */
+.bilet-fiyatlari-container {
+    margin-top: 20px;
+}
+
+.bilet-fiyatlari-header {
+    background-color: #003366; /* Lacivert arka plan */
+    color: white; /* Beyaz yazı rengi */
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bilet-fiyatlari-header:hover {
+    background-color: #990000; /* Kırmızı arka plan (hover) */
+}
+
+.bilet-fiyatlari-content {
+    display: none; /* Başlangıçta gizli */
+    margin-top: 10px;
+}
+
+.bilet-fiyatlari-content table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bilet-fiyatlari-content th, .bilet-fiyatlari-content td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: right;
+}
+
+.bilet-fiyatlari-content th {
+    background-color: #f5f5f5;
+    color: #333;
+    font-weight: bold;
+}
+
+.bilet-fiyatlari-content td:first-child {
+    font-weight: bold;
+    color: #003366; /* Lacivert yazı rengi */
+}
+
+.bilet-fiyatlari-content tr:nth-child(even) {
+    background-color: #f9f9f9; /* Açık gri arka plan */
+}
+
+.bilet-fiyatlari-content tr:nth-child(odd) {
+    background-color: #ffffff; /* Beyaz arka plan */
+}
+
+.bilet-fiyatlari-content tr:hover {
+    background-color: #e6f2ff; /* Açık mavi arka plan */
+}
+
+/* Çalışma Saatleri Stili */
+.calisma-saatleri {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.calisma-saatleri p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Sağ Bölüm (Harita) */
+.right-panel {
+    flex: 1;
+    position: relative;
+}
+
+.map {
+    width: 100%;
+    height: 100%;
+}
+
+/* Duyuru Şeridi */
+.duyuru-seridi {
+    height: 40px;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 14px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.duyuru-seridi marquee {
+    width: 100%;
 }
