@@ -1,57 +1,237 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>İstanbul Metro Ağı</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.3.0/ol.css">
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.3.0/ol.css" />
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            /*font-family: Arial, sans-serif;*/
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container">
-        <!-- Sol Bölüm -->
-        <div class="left-panel" id="leftPanel">
-            <!-- Metro İstanbul Logosu -->
+    <div id="master-container">
+        <style>
+            #master-container {
+                display: flex;
+                height: calc(100% - 40px); /* Duyuru şeridi için yer bırak */
+            }
+        </style>
+        <div id="left-panel">
+            <style>
+                #left-panel {
+                    width: 30%;
+                    min-width: 20%;
+                    max-width: 50%;
+                    background-color: #fff;
+                    padding: 20px;
+                    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+                    overflow-y: auto;
+                    resize: horizontal;
+                    /* Kullanıcıların boyutlandırmasına izin ver */
+                }
+            </style>
             <a href="https://www.metro.istanbul/Home/Index" title="Metro İstanbul" class="brand">
-                <img src="https://www.metro.istanbul/Content/assets/uploaded/9474ccf6-0c21-44fc-8901-f0780eff5e7f.png" alt="Metro İstanbul Logo" class="metro-istanbul-logo" id="metroLogo">
-            </a>            
-            <div class="hat-list">
-                <h2>Hat Kodu</h2>
-                <select id="hatSecimi">
-                    <!-- Hatlar buraya dinamik olarak eklenecek -->
-                </select>
+                <img src="https://www.metro.istanbul/Content/assets/uploaded/9474ccf6-0c21-44fc-8901-f0780eff5e7f.png"
+                    id="metro-istanbul-logo" />
+            </a>
+            <style>
+                #metro-istanbul-logo {
+                    width: 100%;
+                    margin-bottom: 20px;
+                }
+            </style>
+            <div id="hat-listesi-container">
+                <progress id="hat-listesi-progress"></progress>
+                <!-- Hatlar buraya dinamik olarak eklenecek -->
             </div>
-            <div class="calisma-saatleri">
-                <h4>Çalışma Saatleri</h4>
-                <div id="calismaSaatleri">
-                    <!-- Çalışma saatleri buraya dinamik olarak eklenecek -->
-                </div>
+            <div id="calisma-saatleri-container">
+                <progress id="calisma-saatleri-progress"></progress>
+                <!-- Çalışma saatleri buraya dinamik olarak eklenecek -->
             </div>
-            <div class="durak-listesi">
-                <h3>Duraklar</h3>
-                <ul id="durakListesi">
-                    <!-- Duraklar buraya dinamik olarak eklenecek -->
-                </ul>
+            <div id="durak-listesi-container">
+                <progress id="durak-listesi-progress"></progress>
+                <!-- Duraklar buraya dinamik olarak eklenecek -->
             </div>
-            <div class="bilet-fiyatlari">
-                <h4>Bilet Fiyatları</h4>
-                <div id="biletFiyatlari">
-                    <!-- Bilet fiyatları buraya dinamik olarak eklenecek -->
-                </div>
+            <div id="ticket-prices-table-container">
+                <style>
+                    details {
+                        width: 100%;
+                        background-color: white;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                        overflow: hidden;
+                        margin: 20px;
+                    }
+
+                    summary {
+                        padding: 16px;
+                        background-color: #007bff;
+                        color: white;
+                        font-size: 18px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        outline: none;
+                    }
+
+                    summary:hover {
+                        background-color: #0056b3;
+                    }
+
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+
+                    th,
+                    td {
+                        padding: 12px;
+                        text-align: left;
+                        border-bottom: 1px solid #ddd;
+                    }
+
+                    th {
+                        background-color: #f8f9fa;
+                        font-weight: bold;
+                    }
+                </style>
+                <progress id="ticket-prices-progress-bar"></progress>
+                <!-- Bilet fiyatları buraya dinamik olarak eklenecek -->
+                <script>
+                    const container = document.getElementById(
+                        "ticket-prices-table-container"
+                    );
+                    fetch(
+                        "https://api.ibb.gov.tr/MetroIstanbul//api/MetroMobile/V2/GetTicketPrice/TR",
+                        {
+                            method: "GET",
+                            headers: {
+                                Accept: "application/json",
+                                Host: "api.ibb.gov.tr",
+                                "Accept-Encoding": "gzip, deflate, br",
+                                Connection: "keep-alive",
+                            },
+                        }
+                    )
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error(
+                                    "Network response was not ok " + response.statusText
+                                );
+                            }
+                            return response.json();
+                        })
+                        .then((data) => {
+                            if (!data.Success) {
+                                throw new Error("Network response was not ok " + data.Error);
+                            }
+
+                            const table = document.createElement("table");
+                            table.setAttribute("id", "ticket-prices-table");
+
+                            const tbody = document.createElement("tbody");
+
+                            data.Data.forEach((ticket) => {
+                                const tr = document.createElement("tr");
+                                const th = document.createElement("th");
+
+                                th.setAttribute("id", "ticket-prices-table-header");
+                                th.setAttribute("colspan", "2");
+
+                                th.textContent = ticket.Type;
+
+                                tr.appendChild(th);
+                                tbody.appendChild(tr);
+
+                                ticket.TicketPrices.forEach((price) => {
+                                    const tr = document.createElement("tr");
+                                    const tdName = document.createElement("td");
+                                    const tdPrice = document.createElement("td");
+
+                                    tdName.setAttribute("id", "ticket-prices-table-name-cell");
+                                    tdPrice.setAttribute(
+                                        "id",
+                                        "ticket-prices-table-price-cell"
+                                    );
+
+                                    tdName.textContent = price.Name;
+                                    tdPrice.textContent = price.Price;
+
+                                    tr.appendChild(tdName);
+                                    tr.appendChild(tdPrice);
+                                    tbody.appendChild(tr);
+                                });
+
+                                console.log(ticket);
+                            });
+                            table.appendChild(tbody);
+
+                            const details = document.createElement("details");
+                            const summary = document.createElement("summary");
+
+                            details.setAttribute("id", "ticket-prices-table-details");
+                            summary.setAttribute("id", "ticket-prices-table-summary");
+
+                            summary.textContent = "Bilet Fiyatları";
+
+                            details.appendChild(summary);
+                            details.appendChild(table);
+                            container.appendChild(details);
+
+                            document.getElementById("ticket-prices-progress-bar").remove();
+                        })
+                        .catch((error) => {
+                            console.error(
+                                "There was a problem with the fetch operation:",
+                                error
+                            );
+                        });
+                </script>
             </div>
         </div>
 
         <!-- Sağ Bölüm (Harita) -->
         <div class="right-panel">
-            <div id="map" class="map"></div>
-                <!-- Harita buraya dinamik olarak eklenecek -->
+            <style>
+                #right-panel {
+                    flex: 1;
+                    position: relative;
+                }
+            </style>
+            <div id="map"></div>
+            <!-- Harita buraya dinamik olarak eklenecek -->
         </div>
     </div>
 
     <!-- Duyuru Şeridi -->
-    <div class="duyuru-seridi">
-        <marquee id="duyuruMarquee">Duyurular burada gösterilecek...</marquee>
-            <!-- Duyurular buraya dinamik olarak eklenecek -->
+    <div class="duyuru-seridi-container">
+        <style>
+            #duyuru-seridi-marquee {
+                height: 40px;
+                background-color: #333;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                padding: 0 20px;
+                font-size: 14px;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+        </style>
+        <marquee id="duyuru-seridi-marquee">Duyurular burada gösterilecek...</marquee>
+        <!-- Duyurular buraya dinamik olarak eklenecek -->
     </div>
 
     <!-- Child Page (Popup) -->
@@ -67,6 +247,7 @@
 
     <!-- OpenLayers CDN ve Script -->
     <script src="https://cdn.jsdelivr.net/npm/ol@v7.3.0/dist/ol.js"></script>
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
 </body>
+
 </html>
