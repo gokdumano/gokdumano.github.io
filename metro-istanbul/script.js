@@ -162,14 +162,6 @@ function PopulateLinesDB() {
             console.error('$.ajax.error: ', status, error);
         }
     });
-	
-    $('#metro-istanbul-lines').on('change', (event) => {
-        if (event.target.value == 0) {
-            return;
-        }
-		let stations = GetStationByLineId(event.target.value);
-		console.log(stations);
-    });
 }
 
 function PopulateStationsDB() {
@@ -233,9 +225,12 @@ function PopulateStationsDB() {
     });
 
     $('#metro-istanbul-lines').on('change', (event) => {
-		let selectedLineId = parseInt(event.target.value)
-        if (selectedLineId == 0) return;
-        console.log(selectedLineId);
+	if (event.target.value == 0) { return; }
+	    
+	let selectedLineId = parseInt(event.target.value)
+	let stations = GetStationByLineId(event.target.value);
+	
+        console.log(stations);
     });
 }
 
