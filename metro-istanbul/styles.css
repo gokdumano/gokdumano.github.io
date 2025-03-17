@@ -1,0 +1,154 @@
+/* Genel ayarlar */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa; /* Daha yumuşak bir arka plan rengi */
+}
+
+/* Ana konteyner ayarları */
+#container {
+    display: flex;
+    height: 100%;
+    background-color: #f8f9fa; /* Açık gri arka plan */
+}
+
+/* Sol panel ayarları */
+#left-panel {
+    width: 25%;
+    background-color: #ffffff; /* Beyaz arka plan */
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Daha hafif bir gölge */
+    border-right: 1px solid #e0e0e0; /* Sağ kenar çizgisi */
+}
+
+/* Logo ayarları */
+#metro-istanbul-logo-container {
+    text-align: center;
+    margin-bottom: 20px; /* Logo altına boşluk */
+}
+
+#metro-istanbul-logo {
+    width: 80%;
+    height: auto;
+}
+
+/* Metro hatları seçimi */
+#metro-istanbul-lines {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    border: 1px solid #e0e0e0; /* Daha yumuşak bir kenarlık */
+    border-radius: 8px; /* Yumuşak köşeler */
+    background-color: #ffffff; /* Beyaz arka plan */
+    font-size: 14px;
+    color: #333; /* Koyu gri metin rengi */
+}
+
+#metro-istanbul-lines:focus {
+    border-color: #007bff; /* Odaklandığında mavi kenarlık */
+    outline: none;
+}
+
+/* Bilet fiyatları tablo ayarları */
+#ticket-prices-table-container {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff; /* Beyaz arka plan */
+    border-radius: 8px; /* Yumuşak köşeler */
+    overflow: hidden; /* Taşmayı önle */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Hafif gölge */
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0; /* Daha yumuşak bir kenarlık */
+}
+
+th {
+    background-color: #f8f9fa; /* Açık gri başlık arka planı */
+    font-weight: 600; /* Başlık yazı kalınlığı */
+    color: #333; /* Koyu gri metin rengi */
+}
+
+tr:hover {
+    background-color: #f1f1f1; /* Satır hover efekti */
+}
+
+/* Sağ panel ayarları */
+#right-panel {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff; /* Beyaz arka plan */
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Hafif gölge */
+}
+
+/* Harita konteyneri ayarları */
+#map-container {
+    flex: 1;
+    border-radius: 8px; /* Yumuşak köşeler */
+    overflow: hidden; /* Taşmayı önle */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Hafif gölge */
+}
+
+/* Duyuru marquee ayarları */
+#announcement-marquee-container {
+    background-color: #007bff; /* Mavi arka plan */
+    color: white; /* Yazı rengi beyaz */
+    padding: 12px; /* İç boşluk */
+    text-align: center; /* Ortalanmış metin */
+    font-weight: 500; /* Orta kalınlıkta yazı */
+    border-radius: 8px; /* Yumuşak köşeler */
+    margin-top: 20px; /* Üstten boşluk */
+}
+
+/* Modal ayarları */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Yarı saydam arka plan */
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #ffffff; /* Beyaz arka plan */
+    margin: 5% auto;
+    padding: 20px;
+    border: none;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px; /* Yumuşak köşeler */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Gölge efekti */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #333; /* Hover rengi */
+    text-decoration: none;
+}
