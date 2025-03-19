@@ -226,9 +226,10 @@ function PopulateStationsDB() {
 
     $('#metro-istanbul-lines').on('change', (event) => {
 	if (event.target.value == 0) { return; }
-	    
-	let selectedLineId = parseInt(event.target.value)
-	let stations = GetStationByLineId(event.target.value);
+	
+	let stations = GetStationByLineId(
+		parseInt(event.target.value)
+	);
 	
         console.log(stations);
     });
