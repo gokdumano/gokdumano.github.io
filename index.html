@@ -34,7 +34,7 @@
 
     <script>
         function fetchData(url, tableId, statusId, columns) {
-            $.getJSON(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+            $.getJSON(url)
                 .done(function (data) {
                     const contents = JSON.parse(data.contents);
                     console.log(contents);
