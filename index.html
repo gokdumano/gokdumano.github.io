@@ -1,111 +1,41 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İBB Hal Fiyatları</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        .loading { font-weight: bold; color: blue; }
-        .error { font-weight: bold; color: red; }
-    </style>
+  <title>jQuery Proxy İsteği</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>İBB Hal Fiyatları</h1>
+  <button id="sendRequest">İstek Gönder</button>
+  <div id="result" style="margin-top:20px;padding:10px;border:1px solid #ddd;"></div>
+  <div id="error" style="color:red;margin-top:10px;"></div>
 
-    <h2>Kategoriler</h2>
-    <div id="categories-status" class="loading">Yükleniyor...</div>
-    <table id="categories-table"></table>
+  <script>
+    $(document).ready(function() {
+      $('#sendRequest').click(function() {
+        const proxyUrl = 'https://cors-proxy-repo.onrender.com'
+        const apiUrl = 'https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getProductPricebyDay'
 
-    <h2>Merketler</h2>
-    <div id="markets-status" class="loading">Yükleniyor...</div>
-    <table id="markets-table"></table>
-
-    <h2>Birimler</h2>
-    <div id="measureTypes-status" class="loading">Yükleniyor...</div>
-    <table id="measureTypes-table"></table>
-
-    <h2>Ürün Tipleri</h2>
-    <div id="productTypes-status" class="loading">Yükleniyor...</div>
-    <table id="productTypes-table"></table>
-
-    <script>
-        function fetchData(url, tableId, statusId, columns) {
-            $.getJSON(url)
-                .done(function (data) {
-                    const contents = JSON.parse(data.contents);
-                    console.log(contents);
-                    if (contents.ResponseStatus) {
-                        $("#" + statusId).hide();
-                        fillTable($("#" + tableId), contents.Results, columns);
-                    } else {
-                        $("#" + statusId).addClass("error").text(`Hata: ${contents.Message} (${contents.ErrorGUID})`);
-                    }
-                })
-                .fail(function (jqXHR, textStatus, errorThrown) {
-                    $("#" + statusId).addClass("error").text(`Bağlantı hatası: ${textStatus}`);
-                });
-        }
-
-        function fillTable(tableElement, data, columns) {
-            let tableHTML = "<tr>";
-            columns.forEach(col => tableHTML += `<th>${col.label}</th>`);
-            tableHTML += "</tr>";
-
-            data.forEach(item => {
-                tableHTML += "<tr>";
-                columns.forEach(col => tableHTML += `<td>${item[col.key]}</td>`);
-                tableHTML += "</tr>";
-            });
-
-            tableElement.html(tableHTML);
-        }
-
-        $(document).ready(function () {
-            fetchData(
-                "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getCategories",
-                "categories-table",
-                "categories-status",
-                [{ key: "Id", label: "ID" }, { key: "HalId", label: "HalId" }, { key: "Kategori", label: "Kategori" }]
-            );
-
-            fetchData(
-                "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getMarkets",
-                "markets-table",
-                "markets-status",
-                [{ key: "Id", label: "ID" }, { key: "Name", label: "Market Adı" }]
-            );
-            fetchData(
-                "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getMeasureTypes",
-                "measureTypes-table",
-                "measureTypes-status",
-                [{ key: "Id", label: "ID" }, { key: "Name", label: "Birim" }]
-            );
-            fetchData(
-                "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getProductTypes",
-                "productTypes-table",
-                "productTypes-status",
-                [{ key: "Id", label: "ID" }, { key: "Name", label: "Ürün Tipi" }]
-            );
-            const log = $.ajax({
-                            url: "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getCategories",
-                            method: "GET",
-                            headers: {
-                                "Accept": "application/json",
-                                "Host": "halfiyatlaripublicdata.ibb.gov.tr"
-                            },
-                            success: function (data) {
-                                console.log("Kategoriler:", data);
-                            },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.error("Hata:", textStatus, errorThrown);
-                            }
-                        });
-            console.log(log);
+        $.ajax({
+          url: `${proxyUrl}/post?url=${encodeURIComponent(apiUrl)}`,
+          method: 'POST',
+          data: JSON.stringify({
+            item: {
+              Day: "2025-03-26"
+            }
+          }),
+          headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json'
+          },
+          success: function(response) {
+            $('#result').html('<pre>' + JSON.stringify(response, null, 2) + '</pre>');
+          },
+          error: function(xhr) {
+            $('#error').html('Hata: ' + xhr.status + ' - ' + xhr.responseText);
+          }
         });
-    </script>
+      });
+    });
+  </script>
 </body>
 </html>
