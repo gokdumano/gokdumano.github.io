@@ -90,6 +90,21 @@
                 "productTypes-status",
                 [{ key: "Id", label: "ID" }, { key: "Name", label: "Ürün Tipi" }]
             );
+            const log = $.ajax({
+                            url: "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getCategories",
+                            method: "GET",
+                            headers: {
+                                "Accept": "application/json",
+                                "Host": "halfiyatlaripublicdata.ibb.gov.tr"
+                            },
+                            success: function (data) {
+                                console.log("Kategoriler:", data);
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.error("Hata:", textStatus, errorThrown);
+                            }
+                        });
+            console.log(log);
         });
     </script>
 </body>
