@@ -1,63 +1,96 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>gokdumano</title>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<link href="default.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İBB Hal Fiyatları</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .loading { font-weight: bold; color: blue; }
+        .error { font-weight: bold; color: red; }
+    </style>
 </head>
 <body>
-<div id="header">
-	<h1><a href="ResumeDeniz2022.pdf" target="_blank">gokdumano</a></h1>
-</div>
-<div id="menu">
-	<ul>
-		<li><a href="#">Home</a></li>
-		<li><a href="#">Products</a></li>
-		<li><a href="#">Services</a></li>
-		<li><a href="#">About Us</a></li>
-		<li><a href="#">Contact Us</a></li>
-	</ul>
-</div>
-<div id="content">
-	<div id="left">
-		<h3>Classification Examples</h3>
-		<ul>
-			<li><a href="dl/clustering/clustering_example_1.html" target="_blank">Census Income</a><a href="https://archive.ics.uci.edu/ml/datasets/Adult" target="_blank">(source)</a></li>
-			<li><a href="dl/clustering/clustering_example_2.html" target="_blank">Wine Origin</a><a href="https://archive.ics.uci.edu/ml/datasets/Wine" target="_blank">(source)</a></li>
-			<li><a href="dl/clustering/clustering_example_3.html" target="_blank">Wine Quality</a><a href="https://archive.ics.uci.edu/ml/datasets/Wine+Quality" target="_blank">(source)</a></li>
-			<li><a href="dl/clustering/clustering_example_4.html" target="_blank">Breast Cancer</a><a href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29" target="_blank">(source)</a></li>
-			<li><a href="dl/clustering/clustering_example_5.html" target="_blank">Car Evaluation</a><a href="https://archive.ics.uci.edu/ml/datasets/Car+Evaluation" target="_blank">(source)</a></li>
-			<li><a href="dl/clustering/clustering_example_6.html" target="_blank">CIFAR 10</a><a href="https://www.cs.toronto.edu/~kriz/cifar.html" target="_blank">(source)</a></li>
-			<li><a href="dl/clustering/clustering_example_7.html" target="_blank">Dogs & Cats</a><a href="hhttps://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz" target="_blank">(source)</a></li>
-			<li><a href="#">...</a></li>
-		</ul>
-		<h3>Regression Examples</h3>
-		<ul>
-			<li><a href="dl/regression/regression_example_1.html" target="_blank">Wine Quality</a><a href="https://archive.ics.uci.edu/ml/datasets/Wine+Quality" target="_blank">(source)</a></li>
-			<li><a href="#">...</a></li>
-		</ul>
-		<h3>Simple-yet-Honest Games</h3>
-		<ul>
-			<li><a href="pygame/not_hangman/script/main.html" target="_blank">(not)Hangman</a><a href="https://github.com/gokdumano/gokdumano.github.io/tree/main/pygame/not_hangman" target="_blank">(source)</a></li>
-			<li><a href="#">...</a></li>
-		</ul>
-		<h3>Fan-Made Translations</h3>
-		<ul>
-			<li><a href="forks/anxiety/index.html">anxiety</a></li>
-			<li><a href="forks/wbwwb/index.html">wbwwb</a></li>
-			<li><a href="forks/crowds/index.html">crowds</a></li>
-			<li><a href="forks/coming_out_simulator/index.html">coming_out_simulator</a></li>
-			<li><a href="#">...</a></li>
-		</ul>
-	</div>
-	<div id="right">
-		<h2>Recent Updates</h2>
-		<p><strong>[06/09/2006]</strong> Etiam odio mi, suscipit et, rhoncus ac, lacinia, nisl. Aliquam gravida massa eu arcu. <a href="#">More&#8230;</a></p>
-		<p><strong>[06/06/2006]</strong> Fusce mollis tristique sem. Sed eu eros imperdiet eros interdum blandit. Vivamus sagittis bibendum erat. Curabitur malesuada. <a href="#">More&#8230;</a></p>
-		<p><strong>[06/03/2006]</strong> Nunc pellentesque. Sed vestibulum blandit nisl. Quisque elementum convallis purus. Suspendisse potenti. Donec nulla est, laoreet quis, pellentesque in. <a href="#">More&#8230;</a></p>
-	</div>
-</div>
+    <h1>İBB Hal Fiyatları</h1>
+
+    <h2>Kategoriler</h2>
+    <div id="categories-status" class="loading">Yükleniyor...</div>
+    <table id="categories-table"></table>
+
+    <h2>Merketler</h2>
+    <div id="markets-status" class="loading">Yükleniyor...</div>
+    <table id="markets-table"></table>
+
+    <h2>Birimler</h2>
+    <div id="measureTypes-status" class="loading">Yükleniyor...</div>
+    <table id="measureTypes-table"></table>
+
+    <h2>Ürün Tipleri</h2>
+    <div id="productTypes-status" class="loading">Yükleniyor...</div>
+    <table id="productTypes-table"></table>
+
+    <script>
+        function fetchData(url, tableId, statusId, columns) {
+            $.getJSON(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+                .done(function (data) {
+                    const contents = JSON.parse(data.contents);
+                    console.log(contents);
+                    if (contents.ResponseStatus) {
+                        $("#" + statusId).hide();
+                        fillTable($("#" + tableId), contents.Results, columns);
+                    } else {
+                        $("#" + statusId).addClass("error").text(`Hata: ${contents.Message} (${contents.ErrorGUID})`);
+                    }
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    $("#" + statusId).addClass("error").text(`Bağlantı hatası: ${textStatus}`);
+                });
+        }
+
+        function fillTable(tableElement, data, columns) {
+            let tableHTML = "<tr>";
+            columns.forEach(col => tableHTML += `<th>${col.label}</th>`);
+            tableHTML += "</tr>";
+
+            data.forEach(item => {
+                tableHTML += "<tr>";
+                columns.forEach(col => tableHTML += `<td>${item[col.key]}</td>`);
+                tableHTML += "</tr>";
+            });
+
+            tableElement.html(tableHTML);
+        }
+
+        $(document).ready(function () {
+            fetchData(
+                "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getCategories",
+                "categories-table",
+                "categories-status",
+                [{ key: "Id", label: "ID" }, { key: "HalId", label: "HalId" }, { key: "Kategori", label: "Kategori" }]
+            );
+
+            fetchData(
+                "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getMarkets",
+                "markets-table",
+                "markets-status",
+                [{ key: "Id", label: "ID" }, { key: "Name", label: "Market Adı" }]
+            );
+            fetchData(
+                "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getMeasureTypes",
+                "measureTypes-table",
+                "measureTypes-status",
+                [{ key: "Id", label: "ID" }, { key: "Name", label: "Birim" }]
+            );
+            fetchData(
+                "https://halfiyatlaripublicdata.ibb.gov.tr/api/HalManager/getProductTypes",
+                "productTypes-table",
+                "productTypes-status",
+                [{ key: "Id", label: "ID" }, { key: "Name", label: "Ürün Tipi" }]
+            );
+        });
+    </script>
+</body>
 </html>
