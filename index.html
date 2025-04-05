@@ -1,92 +1,74 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CORS Test - Crypto API</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        button {
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 4px;
-            white-space: pre-wrap;
-        }
-        .error {
-            color: #dc3545;
-        }
-    </style>
+    <title>Crypto Market Monitor</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>CORS Test Page</h1>
-        <p>Testing API: http://srv771904.hstgr.cloud/api/v1/status</p>
-        
-        <button onclick="testCors()">Test API Connection</button>
-        
-        <div id="result"></div>
+        <!-- Compact Service Status Section -->
+        <div class="compact-status">
+            <div class="status-line">
+                <span class="status-indicator connected"></span>
+                <span class="service-name">BinanceTR:</span>
+                <span class="latency">Latency: <span id="binanceLatency">45 ms</span></span>
+                <span class="last-checked">Last checked: <span id="binanceChecked">2024-01-01 14:30</span></span>
+            </div>
+            <div class="status-line">
+                <span class="status-indicator disconnected"></span>
+                <span class="service-name">BTC Turk:</span>
+                <span class="latency">Latency: <span id="btcturkLatency">123 ms</span></span>
+                <span class="last-checked">Last checked: <span id="btcturkChecked">2024-01-01 14:29</span></span>
+            </div>
+        </div>
+        <script>
+            const response = await fetch('http://srv771904.hstgr.cloud/api/v1/status')
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                alert(response.json());
+            })
+        </script>
+
+        <!-- Market Data Table -->
+        <table class="market-table">
+            <thead>
+                <tr>
+                    <th>Pair</th>
+                    <th>Base</th>
+                    <th>Quote</th>
+                    <th>BinanceTR</th>
+                    <th>BTC Turk</th>
+                </tr>
+            </thead>
+            <tbody id="marketData">
+                <tr>
+                    <td>BTCUSDT</td>
+                    <td>BTC</td>
+                    <td>USDT</td>
+                    <td>$42,500.00</td>
+                    <td>$42,750.00</td>
+                </tr>
+                <tr>
+                    <td>ETHUSDT</td>
+                    <td>ETH</td>
+                    <td>USDT</td>
+                    <td>$2,300.00</td>
+                    <td>$2,320.00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <span>Total pairs: <strong>2</strong></span>
+            <span>Server uptime: <strong>99.9%</strong></span>
+        </div>
     </div>
 
-    <script>
-        async function testCors() {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = 'Testing...';
-            
-            try {
-                const response = await fetch('https://srv771904.hstgr.cloud/api/v1/status').then(
-                    response => {
-                        if (!response.ok){
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        } else {
-                            return response.json();
-                        }
-                    })
-                
-                resultDiv.innerHTML = `
-                    ✅ Success! Response:
-                    ${JSON.stringify(response, null, 2)}
-                `;
-                
-                console.log('API Response:', response);
-                
-            } catch (error) {
-                resultDiv.innerHTML = `
-                    ❌ Error: ${error.message}
-                    ${error.stack || ''}
-                `;
-                resultDiv.classList.add('error');
-                console.error('CORS Error:', error);
-                
-                // Ek CORS bilgisi
-                if(error.name === 'TypeError') {
-                    resultDiv.innerHTML += '\n\n⚠️ Possible CORS Issue Detected!';
-                }
-            }
-        }
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
