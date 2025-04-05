@@ -57,19 +57,21 @@
             resultDiv.innerHTML = 'Testing...';
             
             try {
-                const response = await fetch('http://srv771904.hstgr.cloud/api/v1/status');
+                const response = await fetch('http://srv771904.hstgr.cloud/api/v1/status').then(
+                    response => {
+                        if (!response.ok){
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        } else {
+                            return response.json();
+                        }
+                    })
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                
-                const data = await response.json();
                 resultDiv.innerHTML = `
                     ✅ Success! Response:
-                    ${JSON.stringify(data, null, 2)}
+                    ${JSON.stringify(response, null, 2)}
                 `;
                 
-                console.log('API Response:', data);
+                console.log('API Response:', response);
                 
             } catch (error) {
                 resultDiv.innerHTML = `
