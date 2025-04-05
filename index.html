@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test - Crypto API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CORS Test Page</h1>
+        <p>Testing API: http://srv771904.hstgr.cloud/api/v1/status</p>
+        
+        <button onclick="testCors()">Test API Connection</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function testCors() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('http://srv771904.hstgr.cloud/api/v1/status');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    ✅ Success! Response:
+                    ${JSON.stringify(data, null, 2)}
+                `;
+                
+                console.log('API Response:', data);
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    ❌ Error: ${error.message}
+                    ${error.stack || ''}
+                `;
+                resultDiv.classList.add('error');
+                console.error('CORS Error:', error);
+                
+                // Ek CORS bilgisi
+                if(error.name === 'TypeError') {
+                    resultDiv.innerHTML += '\n\n⚠️ Possible CORS Issue Detected!';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
