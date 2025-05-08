@@ -11,6 +11,37 @@ let currentDirection = 0;
 let markers = [];
 let polyline = null;
 
+function createStationPopup(stationName, features) {
+    const featureRows = Object.entries(features).map(([feature, available]) => {
+        const iconClass = available ? 'text-green-500' : 'text-red-500';
+        const iconName = available ? 'check-circle' : 'times-circle';
+        const textClass = available ? 'text-gray-800' : 'text-gray-500';
+        
+        return `
+            <div class="feature-row flex items-center p-3 border-b border-gray-100">
+                <div class="feature-icon ${iconClass}">
+                    <i class="fas fa-${iconName}"></i>
+                </div>
+                <span class="text-sm ${textClass} flex-1">${feature}</span>
+                <span class="text-xs font-medium ${available ? 'text-green-600' : 'text-red-600'}">
+                    ${feature === 'Gelecek Seferler' ? available : available ? 'Var' : 'Yok'}
+                </span>
+            </div>
+        `;
+    }).join('');
+
+    return `
+        <div class="bg-blue-600 p-3">
+            <h3 class="text-white font-semibold text-lg">${stationName}</h3>
+        </div>
+        <div class="max-h-64 overflow-y-auto">
+            ${featureRows}
+        </div>
+        <div class="bg-gray-50 p-2 text-right">
+            <span class="text-xs text-gray-500">Son güncelleme: ${new Date().toLocaleDateString()}</span>
+        </div>
+    `;
+}
 async function GetTimeTable(BoardingStationId, DirectionId){
     return await fetch('https://api.ibb.gov.tr/MetroIstanbul/api/MetroMobile/V2/GetTimeTable', {
         method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -53,13 +84,39 @@ async function GetStationBetweenTime(BoardingStationId, DirectionId){
 document.addEventListener('DOMContentLoaded', async function() {
     // Initialize map centered on Hong Kong
     const map = L.map('map').setView([41.113476, 29.061173], 10);
+    
+    // Define different basemaps
+    const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    });
 
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        maxZoom: 19
+    });
+
+    const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 19
+    });
+
+    // Add base layers to the map
+    const baseLayers = {
+        "OpenStreetMap": osmLayer,
+        "Uydu Görünümü": satelliteLayer,
+        "Karanlık Mod": darkLayer
+    };
+
+    // Add default layer
+    osmLayer.addTo(map);
+
+    // Add layer control
+    L.control.layers(baseLayers, null, {
+        position: 'topright',
+        collapsed: true
     }).addTo(map);
 
-    
     [GROUPS, LINES, STATIONS, DIRECTIONS] = await Promise.all([
         fetch('https://api.ibb.gov.tr/MetroIstanbul/api/MetroMobile/V2/GetRailwayGroups'),
         fetch('https://api.ibb.gov.tr/MetroIstanbul/api/MetroMobile/V2/GetLines'),
@@ -244,22 +301,37 @@ document.addEventListener('DOMContentLoaded', async function() {
                     iconAnchor: [8, 8]
                 });
             }
-            
+
             const marker = L.marker([Number(stop.DetailInfo.Latitude), Number(stop.DetailInfo.Longitude)], { icon: icon })
-                .bindPopup(function(_){
-                    // https://www.raymondcamden.com/2024/09/17/using-asynchronous-content-in-leaflet-popups
-                    
-                    
-                    const el = document.createElement('div');
-                    GetTimeTable(stop.Id, currentDirection).then(function(timeTable){
-                        el.innerHTML = `<b>${stop.Description}</b><br>
-                        Bebek Bakım Odası: ${stop.DetailInfo.BabyRoom ? '✓' : '✗'}<br>
-                        Mescid: ${stop.DetailInfo.Masjid ? '✓' : '✗'}<br>
-                        Tuvalet: ${stop.DetailInfo.WC ? '✓' : '✗'}<br>
-                        Gelecek Seferler: ${timeTable}`;
-                    })
-                    return el;
-                }, { minWidth: 500 }).addTo(map);
+            .addTo(map).bindPopup(function(_){
+                const el = document.createElement('div');
+                el.className = 'station-popup';
+                GetTimeTable(stop.Id, currentDirection).then(function(timeTable){
+                    el.innerHTML =  createStationPopup(stop.Description, {
+                        'Bebek Bakım Odası': stop.DetailInfo.BabyRoom,
+                        'Mescid': stop.DetailInfo.Masjid,
+                        'Tuvalet': stop.DetailInfo.WC,
+                        'Gelecek Seferler': timeTable,
+                    });
+                });
+                return el;
+            }, { className: 'station-popup', maxWidth: 280 }).addTo(map);
+
+            // const marker = L.marker([Number(stop.DetailInfo.Latitude), Number(stop.DetailInfo.Longitude)], { icon: icon })
+            //     .bindPopup(function(_){
+            //         // https://www.raymondcamden.com/2024/09/17/using-asynchronous-content-in-leaflet-popups
+            //         
+            //         
+            //         const el = document.createElement('div');
+            //         GetTimeTable(stop.Id, currentDirection).then(function(timeTable){
+            //             el.innerHTML = `<b>${stop.Description}</b><br>
+            //             Bebek Bakım Odası: ${stop.DetailInfo.BabyRoom ? '✓' : '✗'}<br>
+            //             Mescid: ${stop.DetailInfo.Masjid ? '✓' : '✗'}<br>
+            //             Tuvalet: ${stop.DetailInfo.WC ? '✓' : '✗'}<br>
+            //             Gelecek Seferler: ${timeTable}`;
+            //         })
+            //         return el;
+            //     }, { minWidth: 500 }).addTo(map);
             
             markers.push(marker);
             latLngs.push([Number(stop.DetailInfo.Latitude), Number(stop.DetailInfo.Longitude)]);

@@ -8,7 +8,95 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        #map { 
+            height: 100%;
+            width: 100%;
+        }
+
+        .route-line {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .direction-item {
+            transition: all 0.2s ease;
+        }
+        .direction-item:hover {
+            background-color: #f8fafc;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .leaflet-control-layers {
+            border-radius: 8px !important;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.4) !important;
+        }
+        
+        .leaflet-control-layers-toggle {
+            background-size: 26px 26px !important;
+        }
+        
+        .leaflet-bar {
+            border-radius: 8px !important;
+        }
+        
+        .leaflet-control-zoom-in, 
+        .leaflet-control-zoom-out {
+            border-radius: 8px 8px 0 0 !important;
+        }
+        
+        .leaflet-control-zoom-out {
+            border-radius: 0 0 8px 8px !important;
+        }
+        
+        .station-popup .leaflet-popup-content-wrapper {
+            border-radius: 12px !important;
+            padding: 0 !important;
+            overflow: hidden;
+        }
+        
+        .station-popup .leaflet-popup-content {
+            margin: 0 !important;
+            width: 280px !important;
+        }
+        
+        .station-popup .leaflet-popup-tip-container {
+            margin-top: -1px !important;
+        }
+        
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 6px;
+        }
+        
+        .feature-row {
+            transition: background-color 0.2s;
+        }
+        
+        .feature-row:hover {
+            background-color: #f8fafc;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans">
     <div class="flex h-screen overflow-hidden">
