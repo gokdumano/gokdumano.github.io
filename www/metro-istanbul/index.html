@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metro İstanbul Canlı Hatlar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #123D62;
+            color: #333;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app {
+            background: #f5f7fa;
+            border-radius: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            max-width: 420px;
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-around;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+
+        .group-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .group-title {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            color: #111;
+        }
+
+        .line-group {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 0.25rem;
+            padding-left: 0.25rem;
+        }
+
+        .line-button {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .line-button:hover {
+            transform: scale(1.1);
+            z-index: 1;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #555;
+        }
+
+        .footer a {
+            color: #0077cc;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <header class="topbar">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-home"></i>
+            <i class="fas fa-map-marker-alt"></i>
+        </header>
+
+        <main id="railway-groups">
+            <!-- JS ile hat grupları eklenecek -->
+        </main>
+
+        <footer class="footer">
+            <p>Bu site açık kaynaklıdır, Metro İstanbul hatlarını simüle eder.</p>
+            <p>No cookies, no tracking, no ads.</p>
+            <p><a href="#">Ayarlar</a> · <a href="#">Hakkında</a></p>
+        </footer>
+    </div>
+    <script>
+        let [railwayGroups, lines, stations] = [null, null, null];
+
+        async function FetchMetroIstanbulData (serviceName, serviceUrl){
+            return await fetch(serviceUrl).then(function (response) {
+                    if (!response.ok) { throw new Error(`${serviceName} returned with status code ${response.status}`); }
+                    return response.json();
+                }).then(function({Success, Error: Message, Data}){
+                    if (!Success) { throw new Error(`${serviceName} returned with error message ${Message}`); }
+                    console.log(`${serviceName} successfully fetched data`);
+                    return Data;
+                }).catch(function(error){
+                    console.error(error);
+                    return null;
+                });
+        }
+
+        async function GetRailwayGroups (){    
+            return await FetchMetroIstanbulData('GetRailwayGroups', 'https://api.ibb.gov.tr/MetroIstanbul/api/MetroMobile/V2/GetRailwayGroups');
+        }
+
+        async function GetLines (){ 
+            return await FetchMetroIstanbulData('GetLines', 'https://api.ibb.gov.tr/MetroIstanbul/api/MetroMobile/V2/GetLines');
+        }
+
+        async function GetStations (){    
+            return await FetchMetroIstanbulData('GetStations', 'https://api.ibb.gov.tr/MetroIstanbul/api/MetroMobile/V2/GetStations');
+        }
+
+        async function Main(){
+            [railwayGroups, lines, stations] = await Promise.all([
+                GetRailwayGroups() , GetLines(), GetStations()
+            ]);
+
+            const container = document.getElementById("railway-groups");
+
+            railwayGroups.forEach(function({Name, Lines}){
+                let groupSection = document.createElement("div");
+                groupSection.classList.add("group-section");
+
+                let groupTitle = document.createElement("div");
+                groupTitle.classList.add("group-title");
+                groupTitle.textContent = Name;
+            
+                let lineGroup = document.createElement("div");
+                lineGroup.classList.add("line-group");
+                
+                Object.values(Lines).sort(function(left, right){
+                    return left.padEnd(3, '_').localeCompare(right.padEnd(3, '_'));
+                }).forEach(function(line){
+                    let lineButton = document.createElement("a");
+                    lineButton.classList.add("line-button");
+                    lineButton.textContent = line;
+                    lineButton.href = "#";
+                    lineButton.id = `metro-line-${line.toLowerCase()}`;
+                    lineGroup.appendChild(lineButton);
+                });
+            
+                groupSection.appendChild(groupTitle);
+                groupSection.appendChild(lineGroup);
+                container.appendChild(groupSection);
+            });
+
+            lines.forEach(function({Name, Color: {Color_R: R, Color_G: G, Color_B: B}}){
+                let lineButton = document.getElementById(`metro-line-${Name.toLowerCase()}`);
+                if (lineButton) {
+                    lineButton.style.backgroundColor = `rgb(${R}, ${G}, ${B})`;
+                    if (Name === 'M9') { lineButton.style.color = "rgb(0,0,0)"; }
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", Main);
+    </script>
+</body>
+
+</html>
