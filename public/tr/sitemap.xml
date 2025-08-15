@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/pl/categories/</loc>
+    <loc>http://localhost:1313/tr/categories/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -10,11 +10,11 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="pl"
-                href="http://localhost:1313/pl/categories/"
+                hreflang="tr"
+                href="http://localhost:1313/tr/categories/"
                 />
   </url><url>
-    <loc>http://localhost:1313/pl/tags/</loc>
+    <loc>http://localhost:1313/tr/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -22,11 +22,11 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="pl"
-                href="http://localhost:1313/pl/tags/"
+                hreflang="tr"
+                href="http://localhost:1313/tr/tags/"
                 />
   </url><url>
-    <loc>http://localhost:1313/pl/</loc>
+    <loc>http://localhost:1313/tr/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -34,8 +34,8 @@
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="pl"
-                href="http://localhost:1313/pl/"
+                hreflang="tr"
+                href="http://localhost:1313/tr/"
                 />
   </url>
 </urlset>

@@ -1,20 +1,17 @@
 baseURL = 'https://gokdumano.github.io/'
 languageCode = 'en-us'
-pagination.pagerSize = 5
 theme = 'terminal'
-
 enableGitInfo = true
 
-[markup.highlight]
-  noClasses = false
+pagination.pagerSize = 5
 
-[markup.goldmark.renderer]
-  unsafe = true
+markup.highlight.noClasses = false
+markup.goldmark.renderer.unsafe = true
 
 [params]
   # dir name of your main content (default is `content/posts`).
   # the list of set content will show up on your index page (baseurl).
-  contentTypeName = "posts"
+  contentTypeName = "content"
 
   # if you set this to 0, only submenu trigger will be visible
   # showMenuItems = 2
@@ -28,51 +25,50 @@ enableGitInfo = true
   # center theme with default width
   centerTheme = true
 
+  # if your resource directory contains an image called `cover.(jpg|png|webp)`,
+  # then the file will be used as a cover automatically.
+  # With this option you don't have to put the `cover` param in a front-matter.
+  # autoCover = true
+
   # set post to show the last updated
   # If you use git, you can set `enableGitInfo` to `true` and then post will automatically get the last updated
   showLastUpdated = true
 
   # Provide a string as a prefix for the last update date. By default, it looks like this: 2020-xx-xx [Updated: 2020-xx-xx] :: Author
-  updatedDatePrefix = "Updated"
+  # updatedDatePrefix = ""
 
   # set all headings to their default size (depending on browser settings)
-  oneHeadingSize = true
+  # oneHeadingSize = false # default
 
   # whether to show a page's estimated reading time
-  readingTime = true
+  # readingTime = false # default
+  readingTime = true # default
 
-  subtitle = 'Journey To The Centre Of DB'
-  [params.contact]
-    email = 'o.deniz.gokduman@gmail.com'
+  # whether to show a table of contents
+  # can be overridden in a page's front-matter
+  # Toc = false # default
 
-## [menu]
-##   [[menu.main]]
-##     identifier = "about"
-##     name = "About"
-##     url = "/about/"
-##   [[menu.main]]
-##     identifier = "courses"
-##     name = "Courses"
-##     url = "/courses/"
-##   [[menu.main]]
-##     identifier = "posts"
-##     name = "Posts"
-##     url = "/posts/"
-##   [[menu.main]]
-##     identifier = "speaking"
-##     name = "Speaking"
-##     url = "/speaking/"
+  # set title for the table of contents
+  # can be overridden in a page's front-matter
+  # TocTitle = "Table of Contents" # default
+
+[params.twitter]
+  # set Twitter handles for Twitter cards
+  # see https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started#card-and-content-attribution
+  # do not include @
+  creator = ""
+  site = ""
 
 [languages]
   [languages.en]
     languageName = "English"
-    title = "The DBA's Guide to the Galaxy"
+    title = "Terminal"
     [languages.en.params]
       subtitle = "A simple, retro theme for Hugo"
       owner = ""
       keywords = ""
       copyright = ""
-      menuMore = "Show more"
+      ## menuMore = "Show more"
       readMore = "Read more"
       readOtherPosts = "Read other posts"
       newerPosts = "Newer posts"
@@ -81,7 +77,7 @@ enableGitInfo = true
       missingBackButtonLabel = "Back to home page"
 
       [languages.en.params.logo]
-        logoText = "@gokdumano"
+        logoText = "Terminal"
 
       [languages.en.menu]
         [[languages.en.menu.main]]
@@ -95,7 +91,7 @@ enableGitInfo = true
           url = "/posts/showcase"
           weight = 3
         [[languages.en.menu.main]]
-          identifier = "richcontent"
-          name = "Rich Content"
-          url = "/posts/rich-content"
+          identifier = "posts"
+          name = "Posts"
+          url = "/posts"
           weight = 4
