@@ -1,43 +1,101 @@
 baseURL = 'https://gokdumano.github.io/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+pagination.pagerSize = 5
 theme = 'terminal'
 
-[menu]
-  [[menu.main]]
-    identifier = "about"
-    name = "About"
-    url = "/about/"
-  [[menu.main]]
-    identifier = "courses"
-    name = "Courses"
-    url = "/courses/"
-  [[menu.main]]
-    identifier = "posts"
-    name = "Posts"
-    url = "/posts/"
-  [[menu.main]]
-    identifier = "speaking"
-    name = "Speaking"
-    url = "/speaking/"
+enableGitInfo = true
 
-[markup]
-  [markup.goldmark.renderer]
-    unsafe = true
-  [markup.highlight]
-    anchorLineNos = false
-    codeFences = true
-    guessSyntax = false
-    hl_Lines = ''
-    hl_inline = false
-    lineAnchors = ''
-    lineNoStart = 1
-    lineNos = false
-    lineNumbersInTable = true
-    noClasses = true
-    noHl = false
-    style = 'monokailight'
-    tabWidth = 4
+[markup.highlight]
+  noClasses = false
 
-[taxonomies]
-  tag = "tags"
+[markup.goldmark.renderer]
+  unsafe = true
+
+[params]
+  # dir name of your main content (default is `content/posts`).
+  # the list of set content will show up on your index page (baseurl).
+  contentTypeName = "posts"
+
+  # if you set this to 0, only submenu trigger will be visible
+  # showMenuItems = 2
+
+  # show selector to switch language
+  showLanguageSelector = true
+
+  # set theme to full screen width
+  fullWidthTheme = false
+
+  # center theme with default width
+  centerTheme = true
+
+  # set post to show the last updated
+  # If you use git, you can set `enableGitInfo` to `true` and then post will automatically get the last updated
+  showLastUpdated = true
+
+  # Provide a string as a prefix for the last update date. By default, it looks like this: 2020-xx-xx [Updated: 2020-xx-xx] :: Author
+  updatedDatePrefix = "Updated"
+
+  # set all headings to their default size (depending on browser settings)
+  oneHeadingSize = true
+
+  # whether to show a page's estimated reading time
+  readingTime = true
+
+  subtitle = 'Journey To The Centre Of DB'
+  [params.contact]
+    email = 'o.deniz.gokduman@gmail.com'
+
+## [menu]
+##   [[menu.main]]
+##     identifier = "about"
+##     name = "About"
+##     url = "/about/"
+##   [[menu.main]]
+##     identifier = "courses"
+##     name = "Courses"
+##     url = "/courses/"
+##   [[menu.main]]
+##     identifier = "posts"
+##     name = "Posts"
+##     url = "/posts/"
+##   [[menu.main]]
+##     identifier = "speaking"
+##     name = "Speaking"
+##     url = "/speaking/"
+
+[languages]
+  [languages.en]
+    languageName = "English"
+    title = "The DBA's Guide to the Galaxy"
+    [languages.en.params]
+      subtitle = "A simple, retro theme for Hugo"
+      owner = ""
+      keywords = ""
+      copyright = ""
+      menuMore = "Show more"
+      readMore = "Read more"
+      readOtherPosts = "Read other posts"
+      newerPosts = "Newer posts"
+      olderPosts = "Older posts"
+      missingContentMessage = "Page not found..."
+      missingBackButtonLabel = "Back to home page"
+
+      [languages.en.params.logo]
+        logoText = "@gokdumano"
+
+      [languages.en.menu]
+        [[languages.en.menu.main]]
+          identifier = "about"
+          name = "About"
+          url = "/about"
+          weight = 1
+        [[languages.en.menu.main]]
+          identifier = "showcase"
+          name = "Showcase"
+          url = "/posts/showcase"
+          weight = 3
+        [[languages.en.menu.main]]
+          identifier = "richcontent"
+          name = "Rich Content"
+          url = "/posts/rich-content"
+          weight = 4
