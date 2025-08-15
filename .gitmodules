@@ -4,3 +4,6 @@
 [submodule "themes/maverick"]
 	path = themes/maverick
 	url = https://github.com/canhtran/maverick.git
+[submodule "themes/terminal-lite"]
+	path = themes/terminal-lite
+	url = https://github.com/coolapso/hugo-theme-terminalcv
