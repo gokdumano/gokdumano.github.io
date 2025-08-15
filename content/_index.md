@@ -1,26 +1,44 @@
-## Hi there! 👋
+# 👋 Merhaba, Ben Deniz Gökduman!
 
-{{< highlight html >}}
+**Veritabanı Uzmanı Adayı & Full Stack Geliştirici** olarak kariyer yolculuğumda ilerliyorum. Teknolojiye olan tutkum ve verilere tercümanlık etme becerimle, karmaşık problemlere zarif çözümler üretmeye odaklanıyorum.
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Example HTML5 Document</title>
-</head>
-<body>
-  <p>Test</p>
-</body>
-</html>
-{{< /highlight >}}
+## 🧠 Teknik DNA'm
 
-Hey, I'm Maverick - a minimal template. Maverick is a minimal Hugo blog theme base on Listed by Ronalds Vilciņš.
+### 💻 Ana Uzmanlık Alanlarım
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam finibus ipsum ac erat aliquam dapibus. Vestibulum vehicula placerat ex, a consectetur odio pharetra quis. Mauris id urna ante. Fusce pharetra diam ac nisi aliquet, vel egestas ex iaculis. Pellentesque laoreet cursus tellus sed pellentesque. Praesent a rhoncus elit. Nunc ipsum nisl, consequat sit amet pretium quis, gravida id ipsum.
+- **📊 Veritabanları**:
+  - 🐘 PostgreSQL • 🍃 MongoDB • 🔥 Redis
+  - SQL Optimizasyonu • Veri Modelleme • NoSQL Sistemler
+- **🐍 Python**:
+  - Django/Flask • Pandas • SQLAlchemy
+- **🖥️ Full Stack**:
+  - JavaScript (React) • HTML/CSS • RESTful API'ler
+- **🐧 Linux & DevOps**:
+  - Bash Scripting • Docker • AWS/GCP Temelleri
+- **🧠 Algoritmalar**:
+  - Veri Yapıları • Problem Çözme • Big O Analizi
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet consectetur adipiscing elit ut aliquam purus. Massa tempor nec feugiat nisl pretium fusce id velit. Morbi quis commodo odio aenean sed adipiscing. Senectus et netus et malesuada fames ac. Tortor condimentum lacinia quis vel eros donec ac odio. Risus in hendrerit gravida rutrum quisque. Posuere ac ut consequat semper. Sodales ut etiam sit amet
+```bash
+git clone https://github.com/gokdumano/gokdumano.github.io.git
 
-- 📺 Demo: https://maverick.canhtran.me
-- ❤️ Github: https://github.com/canhtran/maverick
+hugo new site gokdumano.github.io --force
 
-Thanks in advance
+cd gokdumano.github.io
+
+git submodule add --depth=1 \
+https://github.com/panr/hugo-theme-terminal themes/terminal
+
+git submodule add --depth=1 \
+https://github.com/coolapso/hugo-theme-terminalcv themes/terminal-lite
+
+git submodule add --depth=1 \
+https://github.com/canhtran/maverick.git themes/maverick
+
+## customize color-style https://panr.github.io/terminal-css/
+
+hugo server --disableFastRender
+
+## add mermaid support by following these
+##   https://navendu.me/posts/adding-diagrams-to-your-hugo-blog-with-mermaid
+##   https://support.typora.io/Draw-Diagrams-With-Markdown/
+```
