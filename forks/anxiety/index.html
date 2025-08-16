@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<!-- THE BIG META -->
+	<title>Anksiyeteli Maceralar!</title>  <!-- TRANSLATE -->
+	<meta name="description" content="Bir insan ve anksiyetesi ile ilgili bir oyun. Oyunda sen anksiyete olarak oynuyorsun." />  <!-- TRANSLATE: content -->
+	<link rel="icon" type="image/png" href="favicon.png">
+
+	<!-- Twitter Card data -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@ncasenmare">
+	<meta name="twitter:title" content="Anksiyeteli Maceralar!">  <!-- TRANSLATE: content -->
+	<meta name="twitter:description" content="Bir insan ve anksiyetesi ile ilgili bir oyun. Oyunda sen anksiyete olarak oynuyorsun.">  <!-- TRANSLATE: content -->
+	<meta name="twitter:image" content="https://ncase.me/anxiety/sharing/thumb.png">
+
+	<!-- Open Graph data -->
+	<meta property="og:title" content="Anksiyeteli Maceralar!">  <!-- TRANSLATE: content -->
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://ncase.me/anxiety/">
+	<meta property="og:image" content="https://ncase.me/anxiety/sharing/thumb.png">
+	<meta property="og:description" content="Bir insan ve anksiyetesi ile ilgili bir oyun. Oyunda sen anksiyete olarak oynuyorsun.">  <!-- TRANSLATE: content -->
+	<meta property="og:site_name" content="Anksiyeteli Maceralar!">  <!-- TRANSLATE: content -->
+	
+	<!-- Styles -->
+	<link rel="stylesheet" type="text/css" href="styles/game.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+
+<!-- - - - - - - - - - - - - - - - - - -->
+<!-- THE GAME ITSELF, FRONT AND CENTER -->
+<!-- - - - - - - - - - - - - - - - - - -->
+
+<div id="game_container">
+	
+	<!-- The main game -->
+	<canvas id="game_canvas"></canvas>
+	<div id="game_words"></div>
+	<div id="game_hp"></div>
+	<div id="game_choices"></div>
+
+	<!-- Click to Advance-->
+	<div id="click_to_advance">
+		<span id="cta_text1">
+			<div class="mini-icon" pic="click" style="top:3px;"></div>
+			<span id="instructions_if_not_mobile">
+				tıkla veya boşluğa bas <!-- TRANSLATE THIS -->
+			</span>
+			<span id="instructions_if_mobile" style="display:none">
+				bi'yere tıkla <!-- TRANSLATE THIS -->
+			</span>
+		</span>
+		<span id="cta_text2">
+			<div class="mini-icon" pic="next"></div>
+		</span>
+	</div>
+
+	<!-- HACK: SPECIAL ATTACK -->
+	<div id="special_attack"></div>
+
+	<!-- Bottom Corner Tabs -->
+	<div id="gear" style="display:none" onclick="publish('show_options'); sfx('ui_button1');">
+		<div class="icon">
+			<div class="mini-icon" pic="gear"></div>
+		</div>
+	</div>
+	<div id="huh" style="display:none">
+		<div class="icon">
+			<div class="mini-icon" pic="about"></div>
+		</div>
+	</div>
+
+	<!-- Paused Screen -->
+	<div id="paused">
+		<div>
+			<!-- TRANSLATE THIS -->
+			mola
+			<div>delirmek için bi'yere tıkla</div>
+		</div>
+	</div>
+
+	<!-- LOADING -->
+	<div id="loading">
+		<div id="loading_bar">
+			<div id="loading_bar_bg"></div>
+			<div id="loading_pic"></div>
+		</div>
+	</div>
+
+	<!-- CONTENT NOTES -->
+	<div id="content_notes">
+
+		<!-- TRANSLATE THIS -->
+		<p style="margin-top: 0.6em;">
+			<i style="color:#ff4040">Anksiyeteli Maceralar</i> şey hakkında, hmm, anksiyete.
+		</p>
+		<p>
+			Bu oyunu tıpkı benim gibi anksiyete bozukluğu olan insanlar <i>için</i> yaptım.
+			Umarım anksiyetenin nasıl çalıştığını - mizahla ile karışık - anlamanıza yardım eder.
+			Ve belki de, ufak bir ihtimalle, korkuya olan korkunuzu azaltır.
+		</p>
+		<p>
+			İçeride kötü çizilmiş çöp adamlar ve yerinde duramayan bir kurt da var.
+			İyi oyunlar!
+		</p>
+		<p style="color:#999; font-size: 16px; line-height: 1.3em;">
+			diğer notlar: alkol tüketimi, cinsellik<span class="hide-if-cuss-free">, @✩$!kadar küfür içermektedir.</span>
+		</p>
+		<p>
+			<a target="_blank" href="https://ncase.me/mental-health/">zihinsel sağlık ipuçları &amp; kaynaklar</a>
+			&#x1f517;
+		</p>
+		<div id="cn_ok" onclick="publish('hide_cn');" style="float:none">
+			tamam <div class="mini-icon" pic="ok" style="top: 3px;"></div>
+		</div>
+
+	</div>
+
+	<!-- ABOUT -->
+	<div id="about"><!-- about=yes-->
+		<div id="about_words">
+		
+			<!-- TRANSLATE THIS -->
+			<div style="font-size: 40px; margin-top: 42px; line-height: 30px;">
+				zihinsel sağlık
+				<a href="https://ncase.me/mental-health/" target="_blank">kaynaklar</a>
+			</div>
+
+			<div style="margin-top: 26px; color: #999;">
+				&mdash; veya &mdash;
+			</div>
+			
+			<div style="font-size: 25px; text-align: left; width: 170px;
+						margin-left: 165px; line-height: 25px; margin-top: 31px;">
+				
+				<!-- TRANSLATE ALL THIS -->
+				<div>
+					benzer oyunlar
+					<a href="https://ncase.me" target="_blank">my shtuff</a>
+				</div>
+				<div style="margin-top: 32px;">
+					bana<br>para at
+					<a href="https://www.patreon.com/ncase" target="_blank">on Patreon</a>
+				</div>
+				<div style="margin-top: 28px;">
+					Monplaisir şarkıları ile kulağın bayram etsin
+					<a href="https://chezmonplaisir.bandcamp.com/album/anxiety" target="_blank">orijinal müzikler</a>
+				</div>
+
+			</div>
+
+			<div id="replay"></div>
+
+			<div style="clear:both;"></div>
+			<div id="close_about" style="margin: 0; float: right; margin-top: 20px;">kapat</div> <!-- TRANSLATE -->
+
+		</div>
+	</div>
+
+	<!-- OPTIONS -->
+	<div id="options">
+		<div style="width: 150px; height: 63px; float: left;">
+			<div id="text_speed_preview"></div>
+			<input id="text_speed_slider" type="range" min=0 value=0.5 max=1 step="0.01"/>
+		</div>
+		<div style="float: right; width: 135px; height: 63px;">
+			<!-- TRANSLATE THIS -->
+			ve böyle ilerle
+			<div id="text_automatic_toggle">tıklayınca</div>
+		</div>
+		<div style="clear:both"></div>
+		<span id="volume_options">
+			<div>Ses:</div> <!-- TRANSLATE -->
+			<input id="volume_slider" type="range" min=0 max=1 value=1 step="0.01"/>
+		</span>
+		<div id="options_ok">
+			tamam <div class="mini-icon" pic="ok" style="top: 3px;"></div> <!-- TRANSLATE -->
+		</div>
+	</div>
+
+	<!-- Dialogue position debugging elements -->
+	<div class='debug' style='position: absolute; width: 5px; height: 250px; background: red;'></div>
+	<div class='debug' style='position: absolute; width: 5px; height: 80px; background: white;'></div>
+
+</div>
+
+<div class="debug" id="section_debug_list"></div>
+
+<!-- - - - - - - - - - - - - - - - - - -->
+<!-- SHTUFF IN THE CORNER - - - - - - - -->
+<!-- - - - - - - - - - - - - - - - - - -->
+
+<!-- TRANSLATE ALL OF THIS -->
+
+<div class="corner-text" id="topleft">
+Yapımcı
+<a href="https://ncase.me/" target="_blank">Nicky Case</a>
+<br>
+Müzik
+<a href="https://loyaltyfreakmusic.com" target="_blank">Monplaisir</a>
+<br>
+Ek kodlar
+<a href="https://spacie.me/" target="_blank">Spacie</a>
+<br>
+<a href="https://github.com/ncase/anxiety#full-credits" target="_blank">Jenerik</a>
+<br><br>
+
+Hayran Yapımı Çeviriler!
+<br>
+<a href="https://nathsom.github.io/ncase-anxiety/">Français</a>
+<br>
+<a href="//notdotteam.github.io/anxiety/">Русский</a>
+<br>
+<a href="https://lucasgcb.github.io/anxiety/">Português do Brasil</a>
+<br>
+<a href="https://jonasreich.github.io/anxiety/">Deutsch</a>
+<br>
+<a href="https://jorgeygari.github.io/anxiety/">Español (Europeo)</a>
+<br>
+<a href="https://fantasmashy.github.io/anxiety-Es-La/">Español (Latino)</a>
+<br>
+<a href="https://z-lyen.github.io/anxiety/">中文</a>
+<br>
+<a href="https://audreyt.github.io/anxiety/">中文（臺灣）</a>
+<br>
+<a href="https://gokdumano.github.io/forks/anxiety/index.html">Türkçe</a>
+<br>
+...
+<br>
+<a href="https://github.com/ncase/anxiety#how-to-translate" target="_blank">(kendi çevirini yap?)</a>
+</div>
+
+<div class="corner-text" id="bottomleft">
+<img src="sprites/about/cc0.png" height="30" style="opacity:0.7"/>
+<br>
+Bu içeriği değiştirmekte &amp; tekrar kullanmakta özgürsünüz!
+<a href="https://github.com/ncase/anxiety#public-domain" target="_blank">(hah?)</a>
+<br>
+<a href="https://github.com/ncase/anxiety" target="_blank">Oyunun kaynak kodunu edinin</a>
+</div>
+
+<div class="corner-text" id="topright">
+Anksiyete dolu bir platformda paylaş:
+<span id="sharing_title">
+	Anksiyeteli Maceralar!
+</span>
+<span id="sharing_desc">
+	Bir insan be anksiyetesi hakkında bir oyun oynadım! Oyunda sen *anksiyetesin*. 😱
+</span>
+<div id="share">
+	<a id="share_link_fb" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fncase.me%2Fanxiety%2F" target="_blank" class="no_deco">
+		<div id="share_fb"></div>
+	</a>
+	<a id="share_link_tw" href="https://twitter.com/intent/tweet?source=https%3A%2F%2Fncase.me%2Fanxiety%2F&text=I%20just%20played%20this%20story-game%20about%20a%20human%20and%20their%20anxiety!%20You%20play%20*as*%20the%20anxiety.%20%F0%9F%98%B1%20https%3A%2F%2Fncase.me%2Fanxiety%2F"
+		target="_blank" class="no_deco">
+		<div id="share_tw"></div>
+	</a>
+	<a id="share_link_em" href="mailto:?subject=Adventures%20with%20Anxiety!&body=I%20just%20played%20this%20story-game%20about%20a%20human%20and%20their%20anxiety!%20You%20play%20*as*%20the%20anxiety.%20%F0%9F%98%B1%20https%3A%2F%2Fncase.me%2Fanxiety%2F"
+		target="_blank" class="no_deco">
+		<div id="share_em"></div>
+	</a>
+</div>
+<br>
+Keyfinize göre paylaşabileceğiniz::<br>
+<a href="sharing" target="_blank">Videolar &amp; Thumbnails</a>
+</div>
+
+<div class="corner-text" id="bottomright">
+<a href="https://ncase.me/mental-health/" target="_blank">Zihinsel Sağlık İpuçları &amp; Kaynaklar</a>
+<span class="hide-if-cuss-free">
+	<br><br>
+	<a href="?c=1">Argosuz mod</a><br>
+	(rapor edilmek istemeyen eğitimciler için)
+</span>
+</div>
+
+
+</body>
+</html>
+
+<!-- SCRIPTS -->
+<script src="scripts/lib/createImageBitmap.js"></script>
+<script src="scripts/lib/tickable_observer.js"></script>
+<script src="scripts/lib/helpers.js"></script>
+<script src="scripts/lib/rsvp.min.js"></script>
+<script src="scripts/lib/minpubsub.min.js"></script>
+<script src="scripts/lib/howler.min.js"></script>
+
+<script src="scripts/game/Loader.js"></script>
+<script src="scripts/game/Game.js"></script>
+<script src="scripts/game/Sprite.js"></script>
+<script src="scripts/game/HP.js"></script>
+<script src="scripts/game/BG_Anxiety.js"></script>
+<script src="scripts/game/Character.js"></script>
+<script src="scripts/game/Sounds.js"></script>
+<script src="scripts/game/Options.js"></script>
+<script src="scripts/game/About.js"></script>
+<script src="scripts/game/ContentNotes.js"></script>
+<script src="scripts/game/Sharing.js"></script>
+
+<!-- INTRO -->
+<script src="scripts/intro/Intro_SceneSetup.js"></script>
+<script src="scripts/intro/Intro_BG.js"></script>
+
+<!-- ACT I -->
+<script src="scripts/act1/Act1_SceneSetup.js"></script>
+<script src="scripts/act1/Act1_Hong.js"></script>
+<script src="scripts/act1/Act1_Beebee.js"></script>
+<script src="scripts/act1/Act1_Outro_BG.js"></script>
+
+<!-- ACT II -->
+<script src="scripts/act2/Act2_SceneSetup.js"></script>
+<script src="scripts/act2/Act2_BG.js"></script>
+<script src="scripts/act2/Act2_Hong.js"></script>
+<script src="scripts/act2/Act2_Beebee.js"></script>
+
+<!-- ACT III -->
+<script src="scripts/act3/Act3_SceneSetup.js"></script>
+<script src="scripts/act3/Act3_BG.js"></script>
+<script src="scripts/act3/Act3_Hong.js"></script>
+<script src="scripts/act3/Act3_Beebee.js"></script>
+
+<!-- ACT IV -->
+<script src="scripts/act4/Act4_SceneSetup.js"></script>
+<script src="scripts/act4/Act4_BG.js"></script>
+<script src="scripts/act4/Act4_Hong.js"></script>
+<script src="scripts/act4/Act4_Beebee.js"></script>
+
+<!-- CREDITS -->
+<script src="scripts/credits/Credits_SceneSetup.js"></script>
+<script src="scripts/credits/Credits_BG.js"></script>
+
+<!-- INTERMISSION -->
+<script src="scripts/intermission/Intermission_SceneSetup.js"></script>
+<script src="scripts/intermission/Intermission_BG.js"></script>
+
+<!-- LET'S GO! -->
+<script src="scripts/main.js"></script>
