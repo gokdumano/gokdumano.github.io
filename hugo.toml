@@ -1,0 +1,75 @@
+baseURL                = 'https://gokdumano.github.io/'
+languageCode           = 'en-us'
+defaultContentLanguage = 'en'
+theme                  = 're-terminal'
+pagination.pagerSize   = 3
+
+enableRobotsTXT = true
+enableGitInfo   = true
+enableEmoji     = true
+
+# SEO Improvements
+canonifyURLs = true
+rssLimit     = 20
+
+[sitemap]
+  changefreq = 'weekly'
+  filename   = 'sitemap.xml'
+  priority   = 0.5
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+
+[params]
+  contentTypeName        = 'content'
+  enableInlineShortcodes = true
+  showLanguageSelector   = true
+  centerTheme            = true
+  showLastUpdated        = true
+  readingTime            = true
+  dateFormat             = '2006-01-02'
+  # dateFormat           = '2006-01-02 15:04'
+  # favicon                = 'favicon.ico'
+  # oneHeadingSize       = true
+
+  [params.logo]
+    logoText     = '@gokdumano'
+    logoHomeLink = '/'
+
+[languages]
+  [languages.en]
+    contentDir               = 'content/en'
+    languageName             = 'English'
+    [languages.en.params]
+      title                  = "The DBA's Guide to the Galaxy | Database Administration & Development"
+      subtitle               = 'PostgreSQL, Oracle, Performance Tuning & Full-Stack Development Insights'
+      keywords               = 'database administration, postgresql expert, oracle dba, sql optimization, performance tuning'
+
+      owner                  = 'Deniz Gökduman'
+      copyright              = '2025 ❤️ Deniz Gökduman'
+
+      updatedDatePrefix      = 'Last Updated:'
+      minuteReadingTime      = 'min read'
+      words                  = 'words'
+      readMore               = 'Read more'
+      missingBackButtonLabel = 'Back to home page'
+      missingContentMessage  = 'Page not found...'
+      menuMore               = 'Show more'
+      readOtherPosts         = 'Read other posts'
+      newerPosts             = 'Newer posts'
+      olderPosts             = 'Older posts'
+      
+    [languages.en.menu]
+      [[languages.en.menu.main]]
+        identifier = 'about'
+        name       = 'About'
+        url        = '/about'
+      [[languages.en.menu.main]]
+        identifier = 'posts'
+        name       = 'Posts'
+        url        = '/posts'
+      [[languages.en.menu.main]]
+        identifier = 'showcase'
+        name       = 'Showcase'
+        url        = '/showcase'

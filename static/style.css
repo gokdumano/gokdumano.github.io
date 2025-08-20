@@ -1,0 +1,18 @@
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+  --accent: #ffffff;
+}
+.index-content {
+    text-align: justify;
+}
+.post {
+    width: 100%;
+    text-align: justify;
+    margin: 20px auto;
+    padding: 20px 0;
+}
+.post-cover {
+  border: 0px solid #000;
+  padding: 0px 0;
+}
