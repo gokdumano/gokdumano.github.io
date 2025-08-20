@@ -4,12 +4,23 @@ title = 'What about me?'
 cover = "img/assets_task_01k318xrw5f33bw22p79m8v0se_1755610944_img_1.webp"
 date = "2025-08-18"
 description = "Sample article showcasing basic styling and formatting for HTML elements."
+mermaid = true
 +++
+
+{{<mermaid>}}
+timeline
+    title History of Social Media Platform
+    2002 : LinkedIn
+    2004 : Facebook
+         : Google
+    2005 : YouTube
+    2006 : Twitter
+{{</mermaid>}}
 
 # Deniz Gökduman
 
 📧 o.deniz.gokduman@gmail.com  
-🔗 [LinkedIn](https://www.linkedin.com/in/deniz-gökduman-67219b157/) | [GitHub](https://github.com/gokdumano) | [Website](https://gokdumano.github.io/) | [Resume](/pdf/deniz_gokduman_2025_cv.pdf)
+🔗 [LinkedIn](https://www.linkedin.com/in/deniz-gökduman-67219b157/) | [GitHub](https://github.com/gokdumano) | [Website](https://gokdumano.github.io/) | [Resume](/docs/deniz_gokduman_2025_cv.pdf)
 
 ---
 
@@ -120,3 +131,4 @@ Currently working at **Istanbul Metropolitan Municipality (IMM)** as a DBA, ensu
 - Algoritmic trading 💱
 - Fitness 💪
   {{< figure src="/img/assets_task_01k330jnrheny8r84hfzdak092_1755669277_img_0.webp" alt="relaxing is not a luxury" position="center" caption="A loud serenity is better than a silent crowd" captionPosition="center" >}}
+

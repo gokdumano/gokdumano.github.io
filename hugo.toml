@@ -32,7 +32,9 @@ rssLimit     = 20
   # dateFormat           = '2006-01-02 15:04'
   # favicon                = 'favicon.ico'
   # oneHeadingSize       = true
-
+  [mermaid]
+    theme      = 'forest'
+    fontFamily = '"Fira Code", Monaco, Consolas, Ubuntu Mono, monospace'
   [params.logo]
     logoText     = '@gokdumano'
     logoHomeLink = '/'
@@ -47,9 +49,9 @@ rssLimit     = 20
       keywords               = 'database administration, postgresql expert, oracle dba, sql optimization, performance tuning'
 
       owner                  = 'Deniz Gökduman'
-      copyright              = '2025 ❤️ Deniz Gökduman'
+      copyright              = '❤️ Deniz Gökduman'
 
-      updatedDatePrefix      = 'Last Updated:'
+      updatedDatePrefix      = 'Last Updated'
       minuteReadingTime      = 'min read'
       words                  = 'words'
       readMore               = 'Read more'
