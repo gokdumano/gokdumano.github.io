@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Building Your Database Lab: Rocky Linux 9 on VirtualBox :: </title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Complete guide to setting up Rocky Linux 9 on Oracle VirtualBox for database environments. Includes security hardening, network configuration, and performance optimization for DBAs." />
+<meta name="keywords" content="Rocky Linux 9, VirtualBox, database lab setup, DBA environment, Linux installation, system security, network configuration, PostgreSQL setup, Oracle database, virtual machine" />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://gokdumano.github.io/posts/rocky-linux-9-virtualbox-database-lab-setup/" />
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://gokdumano.github.io/styles.css">
+
+
+
+<link rel="stylesheet" href="https://gokdumano.github.io/style.css">
+
+
+
+  <link rel="shortcut icon" href="https://gokdumano.github.io/img/theme-colors/orange.png">
+  <link rel="apple-touch-icon" href="https://gokdumano.github.io/img/theme-colors/orange.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Building Your Database Lab: Rocky Linux 9 on VirtualBox">
+<meta property="og:description" content="Complete guide to setting up Rocky Linux 9 on Oracle VirtualBox for database environments. Includes security hardening, network configuration, and performance optimization for DBAs." />
+<meta property="og:url" content="https://gokdumano.github.io/posts/rocky-linux-9-virtualbox-database-lab-setup/" />
+<meta property="og:site_name" content="" />
+
+  
+  
+  <meta property="og:image" content="https://gokdumano.github.io/img/assets_task_01k30y8bsrf0xt0692htj3qc6m_1755599735_img_0.webp">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2025-08-19 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+</head>
+<body class="">
+
+
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://gokdumano.github.io/">
+  <div class="logo">
+    @gokdumano
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="https://gokdumano.github.io/about">About</a></li>
+        
+      
+        
+          <li><a href="https://gokdumano.github.io/posts">Posts</a></li>
+        
+      
+        
+          <li><a href="https://gokdumano.github.io/showcase">Showcase</a></li>
+        
+      
+      
+        <hr />
+        
+          <li>
+            <a href="https://gokdumano.github.io/">English</a>
+          </li>
+        
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+      <ul class="menu menu--desktop menu--language-selector">
+  <li class="menu__trigger">English&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        <li><a href="https://gokdumano.github.io/">English</a></li>
+      
+    </ul>
+  </li>
+</ul>
+
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="https://gokdumano.github.io/about" >About</a></li>
+        
+      
+        
+          <li><a href="https://gokdumano.github.io/posts" >Posts</a></li>
+        
+      
+        
+          <li><a href="https://gokdumano.github.io/showcase" >Showcase</a></li>
+        
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://gokdumano.github.io/posts/rocky-linux-9-virtualbox-database-lab-setup/">Building Your Database Lab: Rocky Linux 9 on VirtualBox</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2025-08-19 [Last Updated: 2025-08-20]</time><span class="post-author">Deniz Gökduman</span>
+    
+<span class="post-reading-time">6 min read (1251 words)</span></div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://gokdumano.github.io/%20tags/rocky-linux/">Rocky Linux</a>&nbsp;
+    
+    #<a href="https://gokdumano.github.io/%20tags/virtualbox/">VirtualBox</a>&nbsp;
+    
+    #<a href="https://gokdumano.github.io/%20tags/dba/">DBA</a>&nbsp;
+    
+    #<a href="https://gokdumano.github.io/%20tags/linux-installation/">Linux Installation</a>&nbsp;
+    
+    #<a href="https://gokdumano.github.io/%20tags/system-security/">System Security</a>&nbsp;
+    
+    #<a href="https://gokdumano.github.io/%20tags/network-configuration/">Network Configuration</a>&nbsp;
+    
+    #<a href="https://gokdumano.github.io/%20tags/virtual-machine/">Virtual Machine</a>&nbsp;
+    
+  </span>
+  
+  
+
+<img src="https://gokdumano.github.io/img/assets_task_01k30y8bsrf0xt0692htj3qc6m_1755599735_img_0.webp" class="post-cover" alt=" "
+    title=" Cover Image" />
+
+
+  
+  <div class="table-of-contents">
+    <h2>
+      Table of Contents
+    </h2>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#part-1-virtual-machine-creation">Part 1: Virtual Machine Creation</a>
+      <ul>
+        <li><a href="#step-1-create-new-virtual-machine">Step 1: Create New Virtual Machine</a></li>
+        <li><a href="#step-2-virtual-hard-disk-configuration">Step 2: Virtual Hard Disk Configuration</a></li>
+        <li><a href="#step-3-vm-settings-optimization">Step 3: VM Settings Optimization</a></li>
+      </ul>
+    </li>
+    <li><a href="#part-2-rocky-linux-9-installation">Part 2: Rocky Linux 9 Installation</a>
+      <ul>
+        <li><a href="#step-1-boot-and-language-selection">Step 1: Boot and Language Selection</a></li>
+        <li><a href="#step-2-installation-summary-configuration">Step 2: Installation Summary Configuration</a></li>
+        <li><a href="#step-3-custom-partitioning-for-database-workloads">Step 3: Custom Partitioning for Database Workloads</a></li>
+        <li><a href="#step-4-network-and-hostname">Step 4: Network and Hostname</a></li>
+        <li><a href="#step-5-user-creation">Step 5: User Creation</a></li>
+      </ul>
+    </li>
+    <li><a href="#part-3-post-installation-configuration">Part 3: Post-Installation Configuration</a>
+      <ul>
+        <li><a href="#step-1-system-updates">Step 1: System Updates</a></li>
+        <li><a href="#step-2-security-hardening">Step 2: Security Hardening</a></li>
+        <li><a href="#step-3-system-monitoring-setup">Step 3: System Monitoring Setup</a></li>
+        <li><a href="#step-4-network-configuration">Step 4: Network Configuration</a></li>
+        <li><a href="#step-5-database-preparation">Step 5: Database Preparation</a></li>
+        <li><a href="#step-6-security-best-practices">Step 6: Security Best Practices</a></li>
+      </ul>
+    </li>
+    <li><a href="#verification-and-testing">Verification and Testing</a>
+      <ul>
+        <li><a href="#system-health-check">System Health Check</a></li>
+        <li><a href="#performance-baseline">Performance Baseline</a></li>
+      </ul>
+    </li>
+    <li><a href="#virtualbox-guest-additions-optional">VirtualBox Guest Additions (Optional)</a></li>
+    <li><a href="#whats-next">What&rsquo;s Next?</a></li>
+    <li><a href="#key-takeaways">Key Takeaways</a></li>
+    <li><a href="#community-note">Community Note</a></li>
+  </ul>
+</nav>
+  </div>
+  
+
+  <div class="post-content"><div>
+      <h1 id="building-your-database-lab-rocky-linux-9-on-virtualbox">Building Your Database Lab: Rocky Linux 9 on VirtualBox<a href="#building-your-database-lab-rocky-linux-9-on-virtualbox" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h1>
+<p>Welcome back! In my previous post, we explored the open source philosophy and Linux distributions. Today, we&rsquo;re getting hands-on by building a virtual lab environment that will serve as the foundation for our database experiments and learning.</p>
+<p><strong>Why Rocky Linux 9?</strong> It&rsquo;s the spiritual successor to CentOS, offering enterprise-grade stability without licensing costs—perfect for database workloads and learning environments.</p>
+<h2 id="prerequisites">Prerequisites<a href="#prerequisites" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Before we begin, ensure you have:</p>
+<ul>
+<li><strong>Oracle VirtualBox</strong> installed (version 7.0 or later) from <a href="https://www.virtualbox.org/wiki/Downloads">virtualbox.org</a></li>
+<li><strong>Rocky Linux 9 ISO</strong> downloaded from <a href="https://rockylinux.org/download">rockylinux.org</a></li>
+<li>At least <strong>8GB RAM</strong> available for the VM</li>
+<li><strong>40GB</strong> free disk space</li>
+<li><strong>Virtualization enabled</strong> in BIOS/UEFI</li>
+</ul>
+<h2 id="part-1-virtual-machine-creation">Part 1: Virtual Machine Creation<a href="#part-1-virtual-machine-creation" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="step-1-create-new-virtual-machine">Step 1: Create New Virtual Machine<a href="#step-1-create-new-virtual-machine" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<ol>
+<li>Open VirtualBox and click <strong>&ldquo;New&rdquo;</strong></li>
+<li>Configure basic settings:
+<ul>
+<li><strong>Name</strong>: <code>rocky-linux-db-lab</code></li>
+<li><strong>Type</strong>: Linux</li>
+<li><strong>Version</strong>: Red Hat (64-bit)</li>
+<li><strong>Memory</strong>: 4096 MB (4GB) minimum</li>
+<li><strong>Hard Disk</strong>: Create a virtual hard disk now</li>
+</ul>
+</li>
+</ol>
+<h3 id="step-2-virtual-hard-disk-configuration">Step 2: Virtual Hard Disk Configuration<a href="#step-2-virtual-hard-disk-configuration" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<ol>
+<li><strong>File Type</strong>: VDI (VirtualBox Disk Image)</li>
+<li><strong>Storage</strong>: Dynamically allocated</li>
+<li><strong>Size</strong>: 40 GB</li>
+<li><strong>Location</strong>: Choose appropriate location with sufficient space</li>
+</ol>
+<h3 id="step-3-vm-settings-optimization">Step 3: VM Settings Optimization<a href="#step-3-vm-settings-optimization" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Before installation, optimize these settings:</p>
+<p><strong>System Settings:</strong></p>
+<ul>
+<li><strong>Processor</strong>: Assign 2-4 CPU cores</li>
+<li><strong>Acceleration</strong>: Enable VT-x/AMD-V and Nested Paging</li>
+<li><strong>Boot Order</strong>: Optical, Hard Disk</li>
+</ul>
+<p><strong>Storage Settings:</strong></p>
+<ul>
+<li>Attach Rocky Linux 9 ISO to IDE Controller</li>
+<li>Enable <strong>&ldquo;Host I/O Cache&rdquo;</strong> for better performance</li>
+</ul>
+<p><strong>Network Settings:</strong></p>
+<ul>
+<li><strong>Adapter 1</strong>: NAT (for internet access)</li>
+<li><strong>Adapter 2</strong>: Host-only Adapter (for host machine access)</li>
+</ul>
+<h2 id="part-2-rocky-linux-9-installation">Part 2: Rocky Linux 9 Installation<a href="#part-2-rocky-linux-9-installation" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="step-1-boot-and-language-selection">Step 1: Boot and Language Selection<a href="#step-1-boot-and-language-selection" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<ol>
+<li>Start the VM and boot from ISO</li>
+<li>Select <strong>&ldquo;Install Rocky Linux 9&rdquo;</strong></li>
+<li>Choose <strong>English (United States)</strong> as installation language</li>
+</ol>
+<h3 id="step-2-installation-summary-configuration">Step 2: Installation Summary Configuration<a href="#step-2-installation-summary-configuration" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p><strong>Date &amp; Time:</strong></p>
+<ul>
+<li>Set your timezone correctly</li>
+<li>Enable <strong>Network Time Protocol (NTP)</strong></li>
+</ul>
+<p><strong>Software Selection:</strong></p>
+<ul>
+<li><strong>Base Environment</strong>: Server with GUI (recommended for learning)</li>
+<li><strong>Additional Software</strong>:
+<ul>
+<li>Development Tools</li>
+<li>System Administration Tools</li>
+<li>Network Servers</li>
+</ul>
+</li>
+</ul>
+<p><strong>Installation Destination:</strong></p>
+<ul>
+<li>Select your virtual disk</li>
+<li><strong>Partitioning</strong>: Custom partitioning for database optimization</li>
+</ul>
+<h3 id="step-3-custom-partitioning-for-database-workloads">Step 3: Custom Partitioning for Database Workloads<a href="#step-3-custom-partitioning-for-database-workloads" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Create these partitions for optimal database performance:</p>
+<pre tabindex="0"><code>/boot      - 1GB   (xfs)
+/          - 15GB  (xfs)
+/var       - 8GB   (xfs)
+/var/log   - 4GB   (xfs)
+/tmp       - 2GB   (xfs)
+/home      - 2GB   (xfs)
+/database  - 8GB   (xfs) - For future database files
+swap       - 4GB
+</code></pre><p><strong>Why this partitioning?</strong></p>
+<ul>
+<li>Separate <code>/var</code> and <code>/var/log</code> prevent log files from filling root partition</li>
+<li>Dedicated <code>/database</code> partition allows for specific mount options</li>
+<li>Adequate swap for database operations</li>
+</ul>
+<h3 id="step-4-network-and-hostname">Step 4: Network and Hostname<a href="#step-4-network-and-hostname" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<ul>
+<li><strong>Hostname</strong>: <code>dblab.local</code></li>
+<li><strong>Enable both network interfaces</strong></li>
+<li>Configure static IP for host-only adapter if needed</li>
+</ul>
+<h3 id="step-5-user-creation">Step 5: User Creation<a href="#step-5-user-creation" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Create a standard user account:</p>
+<ul>
+<li><strong>Username</strong>: <code>dbadmin</code></li>
+<li><strong>Password</strong>: Strong password</li>
+<li><strong>Make this user administrator</strong>: ✓</li>
+</ul>
+<h2 id="part-3-post-installation-configuration">Part 3: Post-Installation Configuration<a href="#part-3-post-installation-configuration" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="step-1-system-updates">Step 1: System Updates<a href="#step-1-system-updates" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p>First, update the system completely:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Switch to root</span>
+</span></span><span style="display:flex;"><span>sudo su -
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Update all packages</span>
+</span></span><span style="display:flex;"><span>dnf update -y
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Install additional useful packages</span>
+</span></span><span style="display:flex;"><span>dnf install -y wget curl vim htop git tree net-tools
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Reboot to ensure kernel updates take effect</span>
+</span></span><span style="display:flex;"><span>reboot
+</span></span></code></pre></div><h3 id="step-2-security-hardening">Step 2: Security Hardening<a href="#step-2-security-hardening" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p><strong>Configure Firewall:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check firewall status</span>
+</span></span><span style="display:flex;"><span>systemctl status firewalld
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Enable firewall</span>
+</span></span><span style="display:flex;"><span>systemctl enable firewalld
+</span></span><span style="display:flex;"><span>systemctl start firewalld
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configure basic rules</span>
+</span></span><span style="display:flex;"><span>firewall-cmd --permanent --add-service<span style="color:#f92672">=</span>ssh
+</span></span><span style="display:flex;"><span>firewall-cmd --permanent --add-port<span style="color:#f92672">=</span>5432/tcp  <span style="color:#75715e"># PostgreSQL</span>
+</span></span><span style="display:flex;"><span>firewall-cmd --permanent --add-port<span style="color:#f92672">=</span>1521/tcp  <span style="color:#75715e"># Oracle</span>
+</span></span><span style="display:flex;"><span>firewall-cmd --reload
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># List current rules</span>
+</span></span><span style="display:flex;"><span>firewall-cmd --list-all
+</span></span></code></pre></div><p><strong>SSH Security:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Edit SSH configuration</span>
+</span></span><span style="display:flex;"><span>vim /etc/ssh/sshd_config
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Recommended changes:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># PermitRootLogin no</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># PasswordAuthentication yes (for lab environment)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Port 22 (consider changing in production)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># MaxAuthTries 3</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Restart SSH service</span>
+</span></span><span style="display:flex;"><span>systemctl restart sshd
+</span></span></code></pre></div><p><strong>SELinux Configuration:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check SELinux status</span>
+</span></span><span style="display:flex;"><span>sestatus
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Keep SELinux enforcing for security</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># If you need to troubleshoot, use permissive mode temporarily:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># setenforce 0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Install SELinux management tools</span>
+</span></span><span style="display:flex;"><span>dnf install -y policycoreutils-python-utils
+</span></span></code></pre></div><h3 id="step-3-system-monitoring-setup">Step 3: System Monitoring Setup<a href="#step-3-system-monitoring-setup" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p><strong>Install and configure system monitoring:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Install monitoring tools</span>
+</span></span><span style="display:flex;"><span>dnf install -y htop iotop iftop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configure system logging</span>
+</span></span><span style="display:flex;"><span>systemctl enable rsyslog
+</span></span><span style="display:flex;"><span>systemctl start rsyslog
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set up log rotation</span>
+</span></span><span style="display:flex;"><span>vim /etc/logrotate.conf
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Ensure database logs will be rotated properly</span>
+</span></span></code></pre></div><h3 id="step-4-network-configuration">Step 4: Network Configuration<a href="#step-4-network-configuration" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p><strong>Configure Static IP for Host-Only Network:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Identify network interfaces</span>
+</span></span><span style="display:flex;"><span>ip addr show
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configure static IP (assuming enp0s8 is host-only interface)</span>
+</span></span><span style="display:flex;"><span>vim /etc/NetworkManager/system-connections/enp0s8.nmconnection
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Example configuration:</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>connection<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>id<span style="color:#f92672">=</span>enp0s8
+</span></span><span style="display:flex;"><span>type<span style="color:#f92672">=</span>ethernet
+</span></span><span style="display:flex;"><span>interface-name<span style="color:#f92672">=</span>enp0s8
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>ipv4<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>method<span style="color:#f92672">=</span>manual
+</span></span><span style="display:flex;"><span>addresses<span style="color:#f92672">=</span>192.168.56.10/24
+</span></span></code></pre></div><p><strong>Test Network Connectivity:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Test internet access</span>
+</span></span><span style="display:flex;"><span>ping -c <span style="color:#ae81ff">4</span> google.com
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Test host-only network</span>
+</span></span><span style="display:flex;"><span>ping -c <span style="color:#ae81ff">4</span> 192.168.56.1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check listening services</span>
+</span></span><span style="display:flex;"><span>netstat -tulpn
+</span></span></code></pre></div><h3 id="step-5-database-preparation">Step 5: Database Preparation<a href="#step-5-database-preparation" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p><strong>Create Database User and Directories:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Create database group and user</span>
+</span></span><span style="display:flex;"><span>groupadd -g <span style="color:#ae81ff">1001</span> dbgroup
+</span></span><span style="display:flex;"><span>useradd -u <span style="color:#ae81ff">1001</span> -g dbgroup -m -d /home/dbuser dbuser
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create database directories</span>
+</span></span><span style="display:flex;"><span>mkdir -p /database/<span style="color:#f92672">{</span>data,backup,scripts,logs<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>chown -R dbuser:dbgroup /database
+</span></span><span style="display:flex;"><span>chmod <span style="color:#ae81ff">755</span> /database
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set up database mount with optimal options</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;/dev/mapper/rocky-database /database xfs defaults,noatime,nodiratime 0 2&#34;</span> &gt;&gt; /etc/fstab
+</span></span></code></pre></div><p><strong>Kernel Parameter Optimization:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Edit sysctl for database optimization</span>
+</span></span><span style="display:flex;"><span>vim /etc/sysctl.d/99-database.conf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Add these parameters:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Database optimization</span>
+</span></span><span style="display:flex;"><span>vm.swappiness <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>vm.dirty_ratio <span style="color:#f92672">=</span> <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>vm.dirty_background_ratio <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>kernel.shmmax <span style="color:#f92672">=</span> <span style="color:#ae81ff">17179869184</span>
+</span></span><span style="display:flex;"><span>kernel.shmall <span style="color:#f92672">=</span> <span style="color:#ae81ff">4194304</span>
+</span></span><span style="display:flex;"><span>kernel.shmmni <span style="color:#f92672">=</span> <span style="color:#ae81ff">4096</span>
+</span></span><span style="display:flex;"><span>kernel.sem <span style="color:#f92672">=</span> <span style="color:#ae81ff">250</span> <span style="color:#ae81ff">32000</span> <span style="color:#ae81ff">100</span> <span style="color:#ae81ff">128</span>
+</span></span><span style="display:flex;"><span>net.ipv4.ip_local_port_range <span style="color:#f92672">=</span> <span style="color:#ae81ff">9000</span> <span style="color:#ae81ff">65500</span>
+</span></span><span style="display:flex;"><span>net.core.rmem_default <span style="color:#f92672">=</span> <span style="color:#ae81ff">262144</span>
+</span></span><span style="display:flex;"><span>net.core.rmem_max <span style="color:#f92672">=</span> <span style="color:#ae81ff">4194304</span>
+</span></span><span style="display:flex;"><span>net.core.wmem_default <span style="color:#f92672">=</span> <span style="color:#ae81ff">262144</span>
+</span></span><span style="display:flex;"><span>net.core.wmem_max <span style="color:#f92672">=</span> <span style="color:#ae81ff">1048576</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Apply changes</span>
+</span></span><span style="display:flex;"><span>sysctl -p /etc/sysctl.d/99-database.conf
+</span></span></code></pre></div><h3 id="step-6-security-best-practices">Step 6: Security Best Practices<a href="#step-6-security-best-practices" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<p><strong>Configure Automatic Updates for Security:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Install and configure automatic updates</span>
+</span></span><span style="display:flex;"><span>dnf install -y dnf-automatic
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configure automatic security updates only</span>
+</span></span><span style="display:flex;"><span>vim /etc/dnf/automatic.conf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set these values:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># upgrade_type = security</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># apply_updates = yes</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># emit_via = email</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Enable automatic updates</span>
+</span></span><span style="display:flex;"><span>systemctl enable --now dnf-automatic.timer
+</span></span></code></pre></div><p><strong>File System Security:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Set secure umask</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;umask 027&#34;</span> &gt;&gt; /etc/bashrc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configure audit logging</span>
+</span></span><span style="display:flex;"><span>systemctl enable auditd
+</span></span><span style="display:flex;"><span>systemctl start auditd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Add database-specific audit rules</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;-w /database -p rwxa -k database_access&#34;</span> &gt;&gt; /etc/audit/rules.d/database.rules
+</span></span><span style="display:flex;"><span>service auditd restart
+</span></span></code></pre></div><p><strong>User Security:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Configure password policies</span>
+</span></span><span style="display:flex;"><span>vim /etc/security/pwquality.conf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Recommended settings:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># minlen = 12</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># minclass = 3</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># maxrepeat = 2</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># maxclasrepeat = 2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Lock unused accounts</span>
+</span></span><span style="display:flex;"><span>passwd -l games
+</span></span><span style="display:flex;"><span>passwd -l ftp
+</span></span></code></pre></div><h2 id="verification-and-testing">Verification and Testing<a href="#verification-and-testing" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="system-health-check">System Health Check<a href="#system-health-check" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Check system resources</span>
+</span></span><span style="display:flex;"><span>free -h
+</span></span><span style="display:flex;"><span>df -h
+</span></span><span style="display:flex;"><span>lscpu
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Verify services</span>
+</span></span><span style="display:flex;"><span>systemctl status firewalld
+</span></span><span style="display:flex;"><span>systemctl status sshd
+</span></span><span style="display:flex;"><span>systemctl status auditd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check security status</span>
+</span></span><span style="display:flex;"><span>sestatus
+</span></span><span style="display:flex;"><span>firewall-cmd --list-all
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Test network connectivity</span>
+</span></span><span style="display:flex;"><span>ping -c <span style="color:#ae81ff">4</span> 8.8.8.8
+</span></span><span style="display:flex;"><span>nslookup google.com
+</span></span></code></pre></div><h3 id="performance-baseline">Performance Baseline<a href="#performance-baseline" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># CPU information</span>
+</span></span><span style="display:flex;"><span>lscpu
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Memory information</span>
+</span></span><span style="display:flex;"><span>cat /proc/meminfo | grep -E <span style="color:#e6db74">&#39;MemTotal|MemFree|MemAvailable&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Disk performance test</span>
+</span></span><span style="display:flex;"><span>dd <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span>/dev/zero of<span style="color:#f92672">=</span>/tmp/test_file bs<span style="color:#f92672">=</span>1M count<span style="color:#f92672">=</span><span style="color:#ae81ff">1024</span> conv<span style="color:#f92672">=</span>fdatasync
+</span></span><span style="display:flex;"><span>rm /tmp/test_file
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Network performance</span>
+</span></span><span style="display:flex;"><span>iperf3 -s  <span style="color:#75715e"># On server</span>
+</span></span><span style="display:flex;"><span>iperf3 -c server_ip  <span style="color:#75715e"># On client</span>
+</span></span></code></pre></div><h2 id="virtualbox-guest-additions-optional">VirtualBox Guest Additions (Optional)<a href="#virtualbox-guest-additions-optional" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h2>
+<p>For better performance and usability:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Install development tools</span>
+</span></span><span style="display:flex;"><span>dnf groupinstall -y <span style="color:#e6db74">&#34;Development Tools&#34;</span>
+</span></span><span style="display:flex;"><span>dnf install -y kernel-devel kernel-headers
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Mount Guest Additions CD and install</span>
+</span></span><span style="display:flex;"><span>mkdir /mnt/cdrom
+</span></span><span style="display:flex;"><span>mount /dev/cdrom /mnt/cdrom
+</span></span><span style="display:flex;"><span>cd /mnt/cdrom
+</span></span><span style="display:flex;"><span>./VBoxLinuxAdditions.run
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Reboot to activate</span>
+</span></span><span style="display:flex;"><span>reboot
+</span></span></code></pre></div><h2 id="whats-next">What&rsquo;s Next?<a href="#whats-next" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Congratulations! You now have a robust, secure Rocky Linux 9 environment ready for database installations. This virtual lab will serve as our playground for:</p>
+<ul>
+<li><strong>PostgreSQL cluster setup</strong></li>
+<li><strong>Oracle Database installation</strong></li>
+<li><strong>Performance tuning experiments</strong></li>
+<li><strong>Backup and recovery testing</strong></li>
+<li><strong>High availability configurations</strong></li>
+</ul>
+<p>In our next post, we&rsquo;ll install PostgreSQL 16 on this system and configure our first database cluster. We&rsquo;ll explore initial configuration, basic security setup, and create our first database schema.</p>
+<h2 id="key-takeaways">Key Takeaways<a href="#key-takeaways" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h2>
+<ol>
+<li><strong>Security First</strong>: Always harden your systems before installing databases</li>
+<li><strong>Plan Your Partitioning</strong>: Proper disk layout prevents future headaches</li>
+<li><strong>Monitor from Day One</strong>: Establish baselines before adding complexity</li>
+<li><strong>Document Everything</strong>: Your future self will thank you</li>
+<li><strong>Test Your Setup</strong>: Verify everything works before proceeding</li>
+</ol>
+<h2 id="community-note">Community Note<a href="#community-note" class="hanchor"
+          ariaLabel="Anchor">&#8983;</a> </h2>
+<p>This setup represents a learning environment. For production deployments, you&rsquo;ll need additional considerations like hardware redundancy, network security, compliance requirements, and vendor support agreements.</p>
+<hr>
+<p><em>Coming up next: &ldquo;PostgreSQL 17 Installation and Initial Configuration on Rocky Linux 9&rdquo; - Where we&rsquo;ll transform this foundation into a working database server.</em></p>
+
+    </div>
+    
+  </div>
+
+  
+
+  
+  
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+    <div class="copyright copyright--user">
+      <span>2025 ❤️ Deniz Gökduman</span>
+      
+      </div>
+    </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="https://gokdumano.github.io/bundle.min.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
