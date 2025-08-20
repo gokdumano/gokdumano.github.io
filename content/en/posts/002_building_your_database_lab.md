@@ -32,8 +32,18 @@ Before we begin, ensure you have:
 - **40GB** free disk space
 - **Virtualization enabled** in BIOS/UEFI
 
-## Part 1: Virtual Machine Creation
+{{< code language="language-batch" title="Install latest Rocky Linux 9 ISO" id="1" expand="Show" collapse="Hide" isCollapsed="true" >}}
+:: --output-dir <dir>    Directory to save files in
+:: --progress-bar        Display transfer progress as a bar
+:: --remote-name         Write output to a file named as the remote file
+curl --output-dir %userprofile%\Downloads --progress-bar --remote-name ^
+https://download.rockylinux.org/pub/rocky/9.6/isos/x86_64/Rocky-9-latest-x86_64-minimal.iso
+{{< /code >}}
 
+## Part 1: Virtual Machine Creation
+{{< notice info >}}
+This is a warning notice. Be warned!
+{{< /notice >}}
 ### Step 1: Create New Virtual Machine
 
 1. Open VirtualBox and click **"New"**
