@@ -30,7 +30,7 @@ rssLimit     = 20
   readingTime            = true
   dateFormat             = '2006-01-02'
   # dateFormat           = '2006-01-02 15:04'
-  # favicon                = 'favicon.ico'
+  # favicon              = 'favicon.ico'
   # oneHeadingSize       = true
   [mermaid]
     theme      = 'forest'
