@@ -9,9 +9,9 @@ coverAltText = 'Learn how to choose the right distribution and master package ma
 tags = ["Linux", "Open Source", "System Administration"]
 keywords = ["open source", "linux distributions", "database administrator", "DBA", "PostgreSQL", "Oracle", "package management", "YUM", "DNF", "APT", "Rocky Linux", "Ubuntu", "RHEL", "system administration"]
 description = "Explore the open source philosophy and Linux distributions from a Database Administrator's perspective. Learn how to choose the right distribution and master package management for database environments."
-showFullContent = false
 
 toc = true
+showFullContent = false
 slug = "open-source-philosophy-dba-foundation"
 canonical = "https://gokdumano.github.io/posts/open-source-philosophy-dba-foundation/"
 +++

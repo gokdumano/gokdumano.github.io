@@ -1,14 +1,17 @@
 +++
 title = "Building Your Database Lab: Rocky Linux 9 on VirtualBox"
-cover = "img/assets_task_01k30y8bsrf0xt0692htj3qc6m_1755599735_img_0.webp"
 date = "2025-08-19"
 author = "Deniz Gökduman"
-showFullContent = false
-toc = true
+cover = "img/assets_task_01k30y8bsrf0xt0692htj3qc6m_1755599735_img_0.webp"
+coverCredit = 'Building Your Database Lab'
+coverAltText = 'Complete guide to setting up Rocky Linux 9 on Oracle VirtualBox for database environments'
 
-description = "Complete guide to setting up Rocky Linux 9 on Oracle VirtualBox for database environments. Includes security hardening, network configuration, and performance optimization for DBAs."
-keywords = ["Rocky Linux 9", "VirtualBox", "database lab setup", "DBA environment", "Linux installation", "system security", "network configuration", "PostgreSQL setup", "Oracle database", "virtual machine"]
 tags = ["Rocky Linux", "VirtualBox", "DBA", "Linux Installation", "System Security", "Network Configuration", "Virtual Machine"]
+keywords = ["Rocky Linux 9", "VirtualBox", "database lab setup", "DBA environment", "Linux installation", "system security", "network configuration", "PostgreSQL setup", "Oracle database", "virtual machine"]
+description = "Complete guide to setting up Rocky Linux 9 on Oracle VirtualBox for database environments. Includes security hardening, network configuration, and performance optimization for DBAs."
+
+toc = true
+showFullContent = false
 slug = "rocky-linux-9-virtualbox-database-lab-setup"
 canonical = "https://gokdumano.github.io/posts/rocky-linux-9-virtualbox-database-lab-setup/"
 +++

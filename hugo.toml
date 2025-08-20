@@ -51,7 +51,7 @@ rssLimit     = 20
       owner                  = 'Deniz Gökduman'
       copyright              = '❤️ Deniz Gökduman'
 
-      updatedDatePrefix      = 'Last Updated'
+      updatedDatePrefix      = 'Updated'
       minuteReadingTime      = 'min read'
       words                  = 'words'
       readMore               = 'Read more'
