@@ -25,6 +25,7 @@ rssLimit     = 20
   contentTypeName        = 'content'
   enableInlineShortcodes = true
   showLanguageSelector   = true
+  fullWidthTheme         = false
   centerTheme            = true
   showLastUpdated        = true
   readingTime            = true
@@ -32,9 +33,6 @@ rssLimit     = 20
   # dateFormat           = '2006-01-02 15:04'
   # favicon              = 'favicon.ico'
   # oneHeadingSize       = true
-  [mermaid]
-    theme      = 'forest'
-    fontFamily = '"Fira Code", Monaco, Consolas, Ubuntu Mono, monospace'
   [params.logo]
     logoText     = '@gokdumano'
     logoHomeLink = '/'

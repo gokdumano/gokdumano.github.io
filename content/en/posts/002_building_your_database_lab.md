@@ -32,18 +32,90 @@ Before we begin, ensure you have:
 - **40GB** free disk space
 - **Virtualization enabled** in BIOS/UEFI
 
-{{< code language="language-batch" title="Install latest Rocky Linux 9 ISO" id="1" expand="Show" collapse="Hide" isCollapsed="true" >}}
+{{< notice tip >}}
+The list of official mirrors can be found <a href="https://mirrors.rockylinux.org/mirrormanager/mirrors" target="_blank">here</a>, which is advisable for one to select the mirror that is geographically closest to them.
+{{< /notice >}}
+https://prismjs.com/plugins/command-line/
+{{< notice info >}}
+Rocky Linux ISOs follow this naming convention `Rocky-<MAJOR#>.<MINOR#>-<ARCH>-<VARIANT>.iso`. To select the ISO with the architecture matching our PC, the following command can be used:
+<pre class="command-line language-bash" data-prompt="c:\users\gokdumano>" data-output="2"><code>systeminfo | findstr /c:"System Type:"
+System Type:              x64-based PC</code></pre>
+{{< /notice >}}
+
+<pre class="command-line language-bash" data-prompt="c:\users\gokdumano>" data-output="6">
+<code>:: --output-dir     Directory to save files in
+:: --progress-bar   Display transfer progress as a bar
+:: --remote-name    Write output to a file named as the remote file
+:: --location       Follow redirects
+curl --output-dir %userprofile%\Downloads --progress-bar --remote-name --location ^
+https://download.rockylinux.org/pub/rocky/9.6/isos/x86_64/Rocky-9-latest-x86_64-minimal.iso</code></pre>
+
+
+{{< notice info >}}
+You can use the `certutil` utility to verify that the file(s) you downloaded are not corrupt. We will demonstrate the verification of the Rocky-9-latest-x86_64-minimal.iso file by checking its checksum.
+<pre class="command-line language-bash" data-prompt="c:\users\gokdumano>" data-output="2-18">
+<code>certutil -hashfile -?
+Usage:
+  CertUtil [Options] -hashfile InFile [HashAlgorithm]
+  Generate and display cryptographic hash over a file
+
+Options:
+  -Unicode          -- Write redirected output in Unicode
+  -gmt              -- Display times as GMT
+  -seconds          -- Display times with seconds and milliseconds
+  -v                -- Verbose operation
+  -privatekey       -- Display password and private key data
+  -pin PIN                  -- Smart Card PIN
+  -sid WELL_KNOWN_SID_TYPE  -- Numeric SID
+            22 -- Local System
+            23 -- Local Service
+            24 -- Network Service
+
+Hash algorithms: MD2 MD4 MD5 SHA1 SHA256 SHA384 SHA512</code></pre>{{< /notice >}}
+
+<pre class="command-line language-bash" data-prompt="c:\users\gokdumano>" data-output="6,8,9,12">
+<code>:: --output-dir   Directory to save files in
+:: --output       Write to file instead of stdout
+:: --silent       Silent mode
+:: --location     Follow redirects
+curl --output-dir %userprofile%\Downloads --output CHECKSUM --silent --location ^
+https://download.rockylinux.org/pub/rocky/9.6/isos/x86_64/Rocky-9-latest-x86_64-minimal.iso.CHECKSUM
+type %userprofile%\Downloads\CHECKSUM
+# Rocky-9-latest-x86_64-minimal.iso: 2252013568 bytes
+SHA256 (Rocky-9-latest-x86_64-minimal.iso) = aed9449cf79eb2d1c365f4f2561f923a80451b3e8fdbf595889b4cf0ac6c58b8
+:: Use the certutil utility to verify the integrity of the ISO file against corruption or tampering.
+certutil -hashfile %userprofile%\Downloads\Rocky-9-latest-x86_64-minimal.iso sha256 | findstr /v "hash"
+aed9449cf79eb2d1c365f4f2561f923a80451b3e8fdbf595889b4cf0ac6c58b8</code></pre>
+
+
+
+
+
+
+{{< code language="cmd" title="Install the latest stable VirtualBox release" id="2" expand="Show" collapse="Hide" isCollapsed="true" >}}
 :: --output-dir <dir>    Directory to save files in
 :: --progress-bar        Display transfer progress as a bar
 :: --remote-name         Write output to a file named as the remote file
-curl --output-dir %userprofile%\Downloads --progress-bar --remote-name ^
-https://download.rockylinux.org/pub/rocky/9.6/isos/x86_64/Rocky-9-latest-x86_64-minimal.iso
+:: --location            Follow redirects
+:: --silent              Silent mode
+
+curl --silent --location https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT
+:: as of writing this post the latest stable version is '7.1.12'
+
+curl https://download.virtualbox.org/virtualbox/7.1.12/ | findstr /c:Win.exe
+:: this command allows us to extract the download link for the latest stable version
+:: <a href="VirtualBox-7.1.12-169651-Win.exe">VirtualBox-7.1.12-169651-Win.exe</a>  14-Jul-2025 20:31  119M
+
+curl --output-dir %userprofile%\Downloads --progress-bar --remote-name --location ^
+https://download.virtualbox.org/virtualbox/7.1.12/VirtualBox-7.1.12-169651-Win.exe
 {{< /code >}}
 
-## Part 1: Virtual Machine Creation
 {{< notice info >}}
-This is a warning notice. Be warned!
+This <a href="https://download.virtualbox.org/virtualbox/LATEST.TXT" target="_blank">URL</a> can also be used for those who are comfortable with the 'bleeding edge' of the latest version.
 {{< /notice >}}
+
+## Part 1: Virtual Machine Creation
+
 ### Step 1: Create New Virtual Machine
 
 1. Open VirtualBox and click **"New"**
