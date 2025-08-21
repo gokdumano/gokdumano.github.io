@@ -22,7 +22,7 @@ Welcome back! In my previous post, we explored the open source philosophy and Li
 
 **Why Rocky Linux 9?** It's the spiritual successor to CentOS, offering enterprise-grade stability without licensing costs—perfect for database workloads and learning environments.
 
-## Prerequisites
+## 0. Prerequisites
 
 Before we begin, ensure you have:
 
@@ -32,158 +32,131 @@ Before we begin, ensure you have:
 - **40GB** free disk space
 - **Virtualization enabled** in BIOS/UEFI
 
+
 {{< notice tip >}}
-The list of official mirrors can be found <a href="https://mirrors.rockylinux.org/mirrormanager/mirrors" target="_blank">here</a>, which is advisable for one to select the mirror that is geographically closest to them.
-{{< /notice >}}
-https://prismjs.com/plugins/command-line/
-{{< notice info >}}
-Rocky Linux ISOs follow this naming convention `Rocky-<MAJOR#>.<MINOR#>-<ARCH>-<VARIANT>.iso`. To select the ISO with the architecture matching our PC, the following command can be used:
-<pre class="command-line language-bash" data-prompt="c:\users\gokdumano>" data-output="2"><code>systeminfo | findstr /c:"System Type:"
-System Type:              x64-based PC</code></pre>
+The list of official mirrors can be found <a href="https://mirrors.rockylinux.org/mirrormanager/mirrors" target="_blank">here</a>, which is advisable for one to select the mirror that is geographically closest to them. To build our lab, the latest release of Rocky Linux 9 is prefered. 
 {{< /notice >}}
 
-<pre class="command-line language-bash" data-prompt="c:\users\gokdumano>" data-output="6">
-<code>:: --output-dir     Directory to save files in
+<pre class="command-line line-numbers" data-prompt="c:\users\gokdumano>" data-continuation-prompt="More?" data-filter-output="(out)" data-continuation-str=" ^">
+<code class="lang-batch" data-prismjs-copy="copy">:: --output-dir     Directory to save files in
 :: --progress-bar   Display transfer progress as a bar
 :: --remote-name    Write output to a file named as the remote file
 :: --location       Follow redirects
-curl --output-dir %userprofile%\Downloads --progress-bar --remote-name --location ^
+curl --progress-bar --remote-name --location --output-dir %userprofile%\downloads ^
 https://download.rockylinux.org/pub/rocky/9.6/isos/x86_64/Rocky-9-latest-x86_64-minimal.iso</code></pre>
 
+{{< notice info >}}
+Rocky Linux ISOs follow this naming convention `Rocky-<MAJOR#>.<MINOR#>-<ARCH>-<VARIANT>.iso`. To select the ISO with the architecture matching our PC, the following command can be used:
+{{< /notice >}}
+
+<pre class="command-line line-numbers" data-prompt="c:\users\gokdumano>" data-continuation-prompt="More?" data-filter-output="(out)" data-continuation-str=" ^">
+<code class="lang-batch" data-prismjs-copy="copy">systeminfo | findstr /c:"System Type:"
+:: System Type:               x64-based PC</code></pre> 
 
 {{< notice info >}}
-You can use the `certutil` utility to verify that the file(s) you downloaded are not corrupt. We will demonstrate the verification of the Rocky-9-latest-x86_64-minimal.iso file by checking its checksum.
-<pre class="command-line language-bash" data-prompt="c:\users\gokdumano>" data-output="2-18">
-<code>certutil -hashfile -?
-Usage:
-  CertUtil [Options] -hashfile InFile [HashAlgorithm]
-  Generate and display cryptographic hash over a file
+You can use the `certutil` utility to verify that the file(s) you downloaded are not corrupt. We will demonstrate the verification of the Rocky-9-latest-x86_64-minimal.iso file by checking its checksum.{{< /notice >}}
 
-Options:
-  -Unicode          -- Write redirected output in Unicode
-  -gmt              -- Display times as GMT
-  -seconds          -- Display times with seconds and milliseconds
-  -v                -- Verbose operation
-  -privatekey       -- Display password and private key data
-  -pin PIN                  -- Smart Card PIN
-  -sid WELL_KNOWN_SID_TYPE  -- Numeric SID
-            22 -- Local System
-            23 -- Local Service
-            24 -- Network Service
-
-Hash algorithms: MD2 MD4 MD5 SHA1 SHA256 SHA384 SHA512</code></pre>{{< /notice >}}
-
-<pre class="command-line language-bash" data-prompt="c:\users\gokdumano>" data-output="6,8,9,12">
-<code>:: --output-dir   Directory to save files in
+<pre class="command-line line-numbers" data-prompt="c:\users\gokdumano>" data-continuation-prompt="More?" data-continuation-str=" ^" data-filter-output="(out)">
+<code class="lang-batch" data-prismjs-copy="copy">:: --output-dir   Directory to save files in
 :: --output       Write to file instead of stdout
 :: --silent       Silent mode
 :: --location     Follow redirects
-curl --output-dir %userprofile%\Downloads --output CHECKSUM --silent --location ^
+curl --output-dir %userprofile%\downloads --output CHECKSUM --silent --location ^
 https://download.rockylinux.org/pub/rocky/9.6/isos/x86_64/Rocky-9-latest-x86_64-minimal.iso.CHECKSUM
-type %userprofile%\Downloads\CHECKSUM
-# Rocky-9-latest-x86_64-minimal.iso: 2252013568 bytes
-SHA256 (Rocky-9-latest-x86_64-minimal.iso) = aed9449cf79eb2d1c365f4f2561f923a80451b3e8fdbf595889b4cf0ac6c58b8
+
+type %userprofile%\downloads\CHECKSUM
+:: # Rocky-9-latest-x86_64-minimal.iso: 2252013568 bytes
+:: SHA256 (Rocky-9-latest-x86_64-minimal.iso) = aed9449cf79eb2d1c365f4f2561f923a80451b3e8fdbf595889b4cf0ac6c58b8
+
 :: Use the certutil utility to verify the integrity of the ISO file against corruption or tampering.
-certutil -hashfile %userprofile%\Downloads\Rocky-9-latest-x86_64-minimal.iso sha256 | findstr /v "hash"
-aed9449cf79eb2d1c365f4f2561f923a80451b3e8fdbf595889b4cf0ac6c58b8</code></pre>
+certutil -hashfile %userprofile%\downloads\Rocky-9-latest-x86_64-minimal.iso sha256 | findstr /v "hash"
+:: aed9449cf79eb2d1c365f4f2561f923a80451b3e8fdbf595889b4cf0ac6c58b8</code></pre> 
 
-
-
-
-
-
-{{< code language="cmd" title="Install the latest stable VirtualBox release" id="2" expand="Show" collapse="Hide" isCollapsed="true" >}}
-:: --output-dir <dir>    Directory to save files in
-:: --progress-bar        Display transfer progress as a bar
-:: --remote-name         Write output to a file named as the remote file
-:: --location            Follow redirects
-:: --silent              Silent mode
-
-curl --silent --location https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT
-:: as of writing this post the latest stable version is '7.1.12'
-
-curl https://download.virtualbox.org/virtualbox/7.1.12/ | findstr /c:Win.exe
-:: this command allows us to extract the download link for the latest stable version
-:: <a href="VirtualBox-7.1.12-169651-Win.exe">VirtualBox-7.1.12-169651-Win.exe</a>  14-Jul-2025 20:31  119M
-
-curl --output-dir %userprofile%\Downloads --progress-bar --remote-name --location ^
-https://download.virtualbox.org/virtualbox/7.1.12/VirtualBox-7.1.12-169651-Win.exe
-{{< /code >}}
-
-{{< notice info >}}
-This <a href="https://download.virtualbox.org/virtualbox/LATEST.TXT" target="_blank">URL</a> can also be used for those who are comfortable with the 'bleeding edge' of the latest version.
+{{< notice info >}} The latest stable version of VirtualBox can be found <a href="https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT" target="_blank">here</a>. However, for those who are comfortable with the 'bleeding edge' of the latest version, this <a href="https://download.virtualbox.org/virtualbox/LATEST.TXT" target="_blank">URL</a> can also be used.
 {{< /notice >}}
 
-## Part 1: Virtual Machine Creation
+<pre class="command-line line-numbers" data-prompt="c:\users\gokdumano>" data-continuation-prompt="More?" data-continuation-str=" ^" data-filter-output="(out)">
+<code class="lang-batch" data-prismjs-copy="copy">curl --silent --location https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT
+:: 7.1.12 (as of writing this post the latest stable version is '7.1.12')
 
-### Step 1: Create New Virtual Machine
+curl https://download.virtualbox.org/virtualbox/7.1.12/ | findstr /c:Win.exe
+:: <a href="VirtualBox-7.1.12-169651-Win.exe">VirtualBox-7.1.12-169651-Win.exe</a>  14-Jul-2025 20:31  119M
+:: this command allows us to extract the download link for the latest stable version
 
-1. Open VirtualBox and click **"New"**
-2. Configure basic settings:
-   - **Name**: `rocky-linux-db-lab`
-   - **Type**: Linux
-   - **Version**: Red Hat (64-bit)
-   - **Memory**: 4096 MB (4GB) minimum
-   - **Hard Disk**: Create a virtual hard disk now
+curl --output-dir %userprofile%\Downloads --progress-bar --remote-name --location ^
+https://download.virtualbox.org/virtualbox/7.1.12/VirtualBox-7.1.12-169651-Win.exe</code></pre> 
 
-### Step 2: Virtual Hard Disk Configuration
+## 1. Virtual Machine Creation
 
-1. **File Type**: VDI (VirtualBox Disk Image)
-2. **Storage**: Dynamically allocated
-3. **Size**: 40 GB
-4. **Location**: Choose appropriate location with sufficient space
+https://www.oracle.com/technical-resources/articles/it-infrastructure/admin-manage-vbox-cli.html
 
-### Step 3: VM Settings Optimization
+### 1.1. Create New Virtual Machine
 
-Before installation, optimize these settings:
+Open VirtualBox and press <kbd>CTRL</kbd>+<kbd>N</kbd> to create a new machine.
+
+**Name and Operating System:**
+* Name: `rocky-linux-db-lab`
+* Type: Linux
+* Subtype: Red Hat
+* Version: Red Hat (64-bit)
+
+**Hardware:**
+* Base Memory: 4096 MB (4GB) minimum
+* Processors: Assign 2-4 CPU cores
+
+### 1.2. Virtual Hard Disk Configuration
+
+**Hard Disk**
+* Hard Disk File Location: Choose an appropriate location
+* Hard Disk File Size: 40 GB
+* Hard Disk File Type and Variant: VDI (VirtualBox Disk Image)
+* Uncheck `Pre-allocate Full Size`
+
+### 1.3. VM Settings Optimization
+
+Before installation, optimize these settings.
 
 **System Settings:**
-
-- **Processor**: Assign 2-4 CPU cores
-- **Acceleration**: Enable VT-x/AMD-V and Nested Paging
-- **Boot Order**: Optical, Hard Disk
+* Boot Order: Optical, Hard Disk
 
 **Storage Settings:**
+* Check `Host I/O Cache` for better performance
+* Attach Rocky Linux 9 ISO to `Controller:IDE`
 
-- Attach Rocky Linux 9 ISO to IDE Controller
-- Enable **"Host I/O Cache"** for better performance
+**Audio Settings:**
+* Uncheck `Enable Audio` to avoid unneccessary system load 
 
 **Network Settings:**
+* Adapter 1: NAT (for internet access)
+* Adapter 2: Host-only Adapter (for host machine access)
 
-- **Adapter 1**: NAT (for internet access)
-- **Adapter 2**: Host-only Adapter (for host machine access)
+## 2. Rocky Linux 9 Installation
 
-## Part 2: Rocky Linux 9 Installation
+### 2.1. Boot and Language Selection
 
-### Step 1: Boot and Language Selection
+* Start the VM and boot from ISO
+* Select **"Install Rocky Linux 9"**
+* Choose the appropriate installation language for you
 
-1. Start the VM and boot from ISO
-2. Select **"Install Rocky Linux 9"**
-3. Choose **English (United States)** as installation language
+### 2.2. Installation Summary Configuration
 
-### Step 2: Installation Summary Configuration
+**Localization:**
 
-**Date & Time:**
+* **Keyboard** & **Language Support**: Choose the appropriate options for you
+* **Time & Date**: Set your timezone correctly and enable **Network Time Protocol (NTP)**
 
-- Set your timezone correctly
-- Enable **Network Time Protocol (NTP)**
+**Software:**
 
-**Software Selection:**
+* **Software Selection**: Minimal Install (recommended for its light-weight)
 
-- **Base Environment**: Server with GUI (recommended for learning)
-- **Additional Software**:
-  - Development Tools
-  - System Administration Tools
-  - Network Servers
+**System:**
+* **Network & Host Name**: Enable both network interfaces and configure static IP for host-only adapter if needed. We used `dblab.local` for the hostname. 
 
-**Installation Destination:**
+_Adaptor 2 (Host-only Adapter) > Configure > IPv4 Settings > Addresses (Add) > Use values from Host-only network created automatically by VirtualBox_
 
-- Select your virtual disk
-- **Partitioning**: Custom partitioning for database optimization
+* **Installation Destination**: Select your virtual disk and `Custom` **Storage Configuration** for database optimization
 
-### Step 3: Custom Partitioning for Database Workloads
-
-Create these partitions for optimal database performance:
+_Create these partitions for optimal database performance:_
 
 ```
 /boot      - 1GB   (xfs)
@@ -202,23 +175,25 @@ swap       - 4GB
 - Dedicated `/database` partition allows for specific mount options
 - Adequate swap for database operations
 
-### Step 4: Network and Hostname
+**User Settings:**
 
-- **Hostname**: `dblab.local`
-- **Enable both network interfaces**
-- Configure static IP for host-only adapter if needed
+* **User Creation**:
 
-### Step 5: User Creation
+_Create a standard user account:_
 
-Create a standard user account:
+```
+Full name :  Database Admin
+Username  :  dbadmin
+Password  :  xxxx
 
-- **Username**: `dbadmin`
-- **Password**: Strong password
-- **Make this user administrator**: ✓
+Make this user administrator: ✓
+```
 
-## Part 3: Post-Installation Configuration
 
-### Step 1: System Updates
+
+## 3. Post-Installation Configuration
+
+### 3.1. System Updates
 
 First, update the system completely:
 
@@ -236,7 +211,7 @@ dnf install -y wget curl vim htop git tree net-tools
 reboot
 ```
 
-### Step 2: Security Hardening
+### 3.2. Security Hardening
 
 **Configure Firewall:**
 
@@ -288,7 +263,7 @@ sestatus
 dnf install -y policycoreutils-python-utils
 ```
 
-### Step 3: System Monitoring Setup
+### 3.3. System Monitoring Setup
 
 **Install and configure system monitoring:**
 
@@ -305,7 +280,7 @@ vim /etc/logrotate.conf
 # Ensure database logs will be rotated properly
 ```
 
-### Step 4: Network Configuration
+### 3.4. Network Configuration
 
 **Configure Static IP for Host-Only Network:**
 
@@ -340,7 +315,7 @@ ping -c 4 192.168.56.1
 netstat -tulpn
 ```
 
-### Step 5: Database Preparation
+### 3.5. Database Preparation
 
 **Create Database User and Directories:**
 
@@ -383,7 +358,7 @@ net.core.wmem_max = 1048576
 sysctl -p /etc/sysctl.d/99-database.conf
 ```
 
-### Step 6: Security Best Practices
+### 3.6. Security Best Practices
 
 **Configure Automatic Updates for Security:**
 
@@ -435,9 +410,9 @@ passwd -l games
 passwd -l ftp
 ```
 
-## Verification and Testing
+## 4. Verification and Testing
 
-### System Health Check
+### 4.1. System Health Check
 
 ```bash
 # Check system resources
@@ -459,7 +434,7 @@ ping -c 4 8.8.8.8
 nslookup google.com
 ```
 
-### Performance Baseline
+### 4.2. Performance Baseline
 
 ```bash
 # CPU information
@@ -477,7 +452,7 @@ iperf3 -s  # On server
 iperf3 -c server_ip  # On client
 ```
 
-## VirtualBox Guest Additions (Optional)
+## 5. VirtualBox Guest Additions (Optional)
 
 For better performance and usability:
 
