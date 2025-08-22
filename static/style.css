@@ -5,6 +5,10 @@
 .index-content {
     text-align: justify;
 }
+div.mermaid{
+  display: flex;
+  justify-content: center;
+}
 .post {
     width: 100%;
     text-align: justify;
