@@ -485,31 +485,35 @@ First, update the system completely:
 sudo su -
 
 # Update all packages
-dnf update --assumeyes # automatically answer yes for all questions
+# --assumeyes   automatically answer yes for all questions
+dnf update --assumeyes
 
-# To list all the available package groups in the repositories of 
-# our distribution all we have to do is to run the following command:
+# =====================================================================
+# dnf [options] group list {group-spec}...
+# =====================================================================
+# List all matching groups, either among installed or available groups.
+# If nothing is specified, list all known groups. --installed and
+# --available options narrow down the requested list. 
+dnf group list --available development
+# Available Groups:
+#    Development Tools
 
+# =====================================================================
+# dnf [options] group info {group-spec}...
+# =====================================================================
+# Display package lists of a group. Shows which packages are installed
+# or available from a repository when -v is used
 # --extended-regexp Interpret PATTERNS as extended regular expressions
-grep --extended-regexp 'Group|Description' < <(dnf group info development)
+grep --extended-regexp 'Group|Description' < \
+<(dnf group info development)
 #Group: Development Tools
 # Description: A basic development environment.
 
-dnf group install "Development
-
-
-
-# Install additional useful packages
-dnf update                                   \
-# automatically answer yes for all questions \
---assumeyes                                  \
-# include optional packages from group       \
---with-optional                              \
-"Development Tools"
-
-dnf install  \
---assumeyes  \
-wget curl vim htop git tree net-tools
+# dnf [options] group install [--with-optional] <group-spec>...
+# Mark the specified group installed and install packages it contains.
+# Also include optional packages of the gruop if --with-optional is
+# is specified.
+dnf group install --assumeyes --with-optional 'Development Tools'
 
 # Reboot to ensure kernel updates take effect
 reboot</code></pre>
@@ -517,6 +521,102 @@ reboot</code></pre>
 **Security Hardening**
 
 Configure Firewall:
+
+<pre class="command-line" data-user="dbadmin" data-host="remotehost" data-filter-output="(out)" data-continuation-str="\" >
+<code class="lang-bash" data-prismjs-copy="copy"># Check firewall status (2>/dev/null discards/silents the stderr)
+grep --extended-regexp 'Loaded|Active' < \
+<(systemctl status firewalld 2>/dev/null)
+#     Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; preset: enabled)
+#     Active: active (running) since Tue 2025-08-26 09:05:33 +03; 31min ago
+
+# If the firewall service were not enabled or running:
+# Enable firewall
+# systemctl enable firewalld
+# systemctl start firewalld
+
+# Configure basic rules and remove unnecessary ones
+# --quiet                               Do not print status messages
+# --remove-service service              Remove a service
+# --add-service service                 Add a service
+# --add-port portid[-portid]/protocol   The port can either be a single port number or a port range portid-portid. The protocol can either be tcp, udp, sctp or dccp.
+# --runtime-to-permanent                Save active runtime configuration and overwrite permanent configuration with it
+
+firewall-cmd --quiet --remove-service cockpit
+firewall-cmd --quiet --add-service=ssh
+firewall-cmd --quiet --add-port=5432/tcp  # PostgreSQL
+firewall-cmd --quiet --add-port=1521/tcp  # Oracle
+firewall-cmd --quiet --add-port=3306/tcp  # MySQL
+firewall-cmd --quiet --runtime-to-permanent
+
+# List current rules
+firewall-cmd --list-all</code></pre>
+
+SSH Security: 
+
+<pre class="command-line" data-user="dbadmin" data-host="remotehost" data-filter-output="(out)" data-continuation-str="\" >
+<code class="lang-bash" data-prismjs-copy="copy"># To modify the system-wide sshd configuration, create a *.conf file under
+# /etc/ssh/sshd_config.d/*.conf
+echo "# created by $(whoami) at $(date +%Y-%m-%dT%H:%M:%S)
+PermitRootLogin no
+PasswordAuthentication yes # for lab environment
+Port 22 # consider changing in production
+MaxAuthTries 3" > /etc/ssh/ssh_config.d/000_ssh_security.conf
+
+# Restart SSH service
+systemctl restart sshd</code></pre>
+
+SELinux Configuration:
+
+<pre class="command-line" data-user="dbadmin" data-host="remotehost" data-filter-output="(out)" data-continuation-str="\" >
+<code class="lang-bash" data-prismjs-copy="copy"># Check SELinux status
+sestatus
+
+# Keep SELinux enforcing for security
+# If you need to troubleshoot, use permissive mode temporarily:
+# setenforce 0
+
+# Install SELinux management tools
+dnf install --assumeyes policycoreutils-python-utils</code></pre>
+
+**System Monitoring Setup**
+
+Install and configure system monitoring:
+
+<pre class="command-line" data-user="dbadmin" data-host="remotehost" data-filter-output="(out)" data-continuation-str="\" >
+<code class="lang-bash" data-prismjs-copy="copy"># Installation epel source (also called repository)
+dnf install --assumeyes epel-release
+# Many EPEL packages require the CodeReady Builder (CRB) repository.
+# It is recommended that you run `/usr/bin/crb enable` to enable the CRB repository
+/usr/bin/crb enable
+# Enabling CRB repo
+# CRB repo is enabled and named: crb
+
+# Generate cache
+dnf makecache
+
+# Install monitoring tools
+# htop  : interactive process viewer
+# iotop : simple top-like I/O monitor
+# iftop : display bandwith usage on an interface by host
+dnf install --assumeyes htop iotop iftop
+
+# Configure system logging
+systemctl enable rsyslog
+systemctl start rsyslog
+
+# Set up log rotation
+vim /etc/logrotate.conf
+# Ensure database logs will be rotated properly</code></pre>
+
+**Network Configuration**
+
+Configure Static IP for Host-Only Network:
+
+<pre class="command-line" data-user="dbadmin" data-host="remotehost" data-filter-output="(out)" data-continuation-str="\" >
+<code class="lang-bash" data-prismjs-copy="copy"># Identify network interfaces
+ip link show</code></pre>
+
+
 
 ## 3. Starting a VM on a Headless Server
 
