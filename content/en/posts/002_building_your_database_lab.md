@@ -465,9 +465,10 @@ systemctl start firewalld
 # Configure basic rules
 firewall-cmd --remove-service cockpit
 firewall-cmd --add-service ssh
-firewall-cmd --add-port 5432/tcp  # PostgreSQL
+firewall-cmd --add-port 1433/tcp  # SQL Server
 firewall-cmd --add-port 1521/tcp  # Oracle
 firewall-cmd --add-port 3306/tcp  # MySQL
+firewall-cmd --add-port 5432/tcp  # PostgreSQL
 firewall-cmd --runtime-to-permanent
 
 # List current rules
