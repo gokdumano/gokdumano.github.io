@@ -64,7 +64,7 @@ certutil -hashfile %userprofile%\downloads\Rocky-9-latest-x86_64-minimal.iso sha
 :: Extract what the latest stable version is
 curl --location --silent https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT
 
-curl https://download.virtualbox.org/virtualbox/7.1.12/ | findstr /c:Win.exe
+curl https://download.virtualbox.org/virtualbox/7.1.12/ | findstr /c:"Win.exe"
 
 :: Download Oracle VirtualBox
 curl --progress-bar --remote-name --location --output-dir %userprofile%\downloads ^
@@ -73,9 +73,50 @@ https://download.virtualbox.org/virtualbox/7.1.12/VirtualBox-7.1.12-169651-Win.e
 
 ## 1. Virtual Machine Creation
 
-You can create your VM either through the VirtualBox GUI or using the powerful command-line interface. For this article, the first method is covered below.
+You can create your VM either through the VirtualBox GUI or using the powerful command-line interface. 
+For this article, the latter is covered.
 
-Open VirtualBox and press **Ctrl+N** to create a new machine.
+Oracle VM VirtualBox offers the following tools to control virtualization engine settings, create new VMs, and work on existing VMs within Oracle VM VirtualBox:
+
+* VirtualBox Manager, the GUI for controlling Oracle VM VirtualBox
+* VBoxManage, the CLI to Oracle VM VirtualBox
+* The Main API, which is implemented using the Component Object Model (COM/XPCOM)
+* The web service, which maps nearly the entire Main API for web applications
+
+{{<mermaid>}}
+block-beta
+columns 1
+  block
+    A["VirtualBox GUI"]
+    B["VBoxManage <a href="https://www.oracle.com/technical-resources/articles/it-infrastructure/admin-manage-vbox-cli.html">#dagger;</a>"]
+    C["Web Service API"]
+  end
+  space
+  D["VirtualBox Main API: COM/XPCOM"]
+  space
+  E["Virtualization Engine"]
+  A --> D
+  B --> D
+  C --> D
+  D --> E
+  style B fill:#ff0000;
+{{</mermaid>}}
+
+### 1.1 VM Configuration Summary
+
+```batch
+:: SET will remain only for the duration of the current CMD session.
+set "PATH=%PATH%;C:\Program Files\Oracle\VirtualBox"
+::
+:: To set environment variables permanently, SETX command can be used
+:: setx PATH "%PATH%;C:\Program Files\Oracle\VirtualBox"
+::
+VBoxManage --version
+:: 7.1.12r169651
+::
+VBoxManage list --long ostypes | findstr /c:"RedHat9_64"
+:: ID:               RedHat9_64
+```
 
 **Name and Operating System:**
 - **Name**: `rocky-linux-db-lab`
@@ -83,81 +124,251 @@ Open VirtualBox and press **Ctrl+N** to create a new machine.
 - **Subtype**: Red Hat
 - **Version**: Red Hat 9.x (64-bit)
 
+```batch
+:: --name          The name of the VM
+:: --basefolder    Specifies the name of the folder in which to
+::                 save the machine configuration file for the new VM.
+:: --ostype        Specifies the guest OS to run in the VM.
+:: --register      Registers the VM with your Oracle VM VirtualBox
+::                 installation.
+::
+VBoxManage createvm              ^
+--name rocky-linux-db-lab        ^
+--basefolder "E:\VirtualBox VMs" ^
+--ostype RedHat9_64              ^
+--register
+```
+
 **Hardware:**
-- **Base Memory**: 2048 MB (4GB) minimum
-- **Processors**: Assign 1-2 CPU cores
+- **Base Memory**: 4096 MB (4GB) minimum
+- **Processors**: Assign 2 CPU cores
+
+```batch
+:: --memory 4096    Allocates 4GB RAM - critical for high-traffic database
+::                  workloads
+:: --cpus 2         Assigns 2 virtual CPUs from 4 physical cores, leaving 
+::                  resources for other VMs
+:: --vram 16        Minimal video memory allocation since database servers
+::                  don't need graphics
+::
+VBoxManage modifyvm ^
+rocky-linux-db-lab  ^
+--memory 4096       ^
+--cpus 2            ^
+--vram 16
+```
 
 **Hard Disk:**
 - **Hard Disk File Location**: Choose an appropriate location
 - **Hard Disk File Size**: 40 GB
 - **Hard Disk File Type and Variant**: VDI (VirtualBox Disk Image)
 - **Uncheck** `Pre-allocate Full Size`
-
-**VM Settings Optimization:**
-Before installation, optimize these settings:
-
-**System Settings:**
-- **Boot Order**: Optical, Hard Disk
-
-**Storage Settings:**
 - **Check** `Host I/O Cache` for better performance
 - Attach Rocky Linux 9 ISO to `Controller:IDE`
 
+```batch
+:: The `VBoxManage createmedium` command creates a new medium, such 
+:: as a disk image file.
+:: --size               Specifies the image capacity in one megabyte units.
+:: --format             Specifies the file format of the output file.
+:: --variant=Standard   The variant that has a dynamically allocated file size.
+:: --filename           Specifies the absolute path name to a file on the host
+::                      file system.
+:: ====================================================================
+:: This creates a 40GB dynamically allocated disk that grows as needed.
+:: ====================================================================
+VBoxManage createmedium disk ^
+--size 40960                 ^
+--format VDI                 ^
+--variant Standard           ^
+--filename "E:\VirtualBox VMs\rocky-linux-db-lab\rocky-linux-db-lab.vdi"
+:: ====================================================================
+:: The `VBoxManage storagectl` command enables you to attach, modify,
+:: and remove a storage controller.
+:: --name          Specifies the name of the storage controller.
+:: --add           Specifies the type of the system bus to which to connect
+::                 the storage controller.
+:: --hostiocache   Specifies whether to use the host I/O cache for all disk
+::                 images attached to this storage controller.
+:: --bootable      Specifies whether this controller is bootable.
+:: ====================================================================
+:: Create SATA controller for the hard disk:
+:: ====================================================================
+VBoxManage storagectl    ^
+rocky-linux-db-lab       ^
+--name "SATA Controller" ^
+--add sata               ^
+--hostiocache on         ^
+--bootable on
+:: ====================================================================
+:: Create IDE controller for the installation media:
+:: ====================================================================
+VBoxManage storagectl   ^
+rocky-linux-db-lab      ^
+--name "IDE Controller" ^
+--add ide
+:: ====================================================================
+:: The `VBoxManage storageattach` command enables you to manage a storage medium
+:: that you connectedto a storage controller by using the `VBoxManage storagectl`
+:: command.
+:: --storagectl        Specifies the name of the storage controller. 
+:: --port              Specifies the port number of the storage controller
+::                     to modify.
+:: --device            Specifies the port's device number to modify.
+:: --type              Specifies the drive type to which the medium is associated.
+:: --medium=filename   Specifies the full path of an existing disk image 
+::                     to attach to the specified device slot.
+:: ====================================================================
+:: Attach the virtual hard disk:
+:: ====================================================================
+VBoxManage storageattach       ^
+rocky-linux-db-lab             ^
+--storagectl "SATA Controller" ^
+--port 0                       ^
+--device 0                     ^
+--type hdd                     ^
+--medium "E:\VirtualBox VMs\rocky-linux-db-lab\rocky-linux-db-lab.vdi"
+:: ====================================================================
+:: Attach the Rocky Linux ISO:
+:: ====================================================================
+VBoxManage storageattach      ^
+rocky-linux-db-lab            ^
+--storagectl "IDE Controller" ^
+--port 0                      ^
+--device 0                    ^
+--type dvddrive               ^
+--medium %userprofile%\downloads\Rocky-9-latest-x86_64-minimal.iso
+```
+
+**System Settings:**
+- **Boot Order**: Optical, Hard Disk
+```batch
+:: --boot1 dvd    Sets boot priority: dvd first, then disk
+:: --boot2 disk
+:: --boot3 none
+:: --boot4 none
+::
+VBoxManage modifyvm ^
+rocky-linux-db-lab  ^
+--boot1 dvd         ^
+--boot2 disk        ^
+--boot3 none        ^
+--boot4 none
+```
+
 **Audio Settings:**
 - **Uncheck** `Enable Audio` to avoid unnecessary system load
+```batch
+:: --audio-enabled off    Disables audio completely - not needed for server workloads
+:: --usb-ohci off         Disables all USB controllers for security and performance
+:: --usb-ehci off
+:: --usb-xhci off
+:: --graphicscontroller   Specifies the graphics controller type to use.
+::
+VBoxManage modifyvm ^
+rocky-linux-db-lab  ^
+--audio-enabled off ^
+--usb-ohci off      ^
+--usb-ehci off      ^
+--usb-xhci off      ^
+--graphicscontroller vmsvga
+```
+
 
 **Network Settings:**
 - **Adapter 1**: NAT (for internet access)
 - **Adapter 2**: Host-only Adapter (for host machine access)
 
+```batch
+:: Check if there is any host-only network
+VBoxManage list hostonlyifs | findstr /b "Name:"
+:: Name:            VirtualBox Host-Only Ethernet Adapter
+::
+:: We can create a new Host-Only Network in case there is none:
+:: VBoxManage hostonlyif create
+::
+:: --ip        Specifies the IPv4 IP address for the network interface.
+:: --netmask   Specifies the IPv4 netmask of the network interface.
+::
+VBoxManage hostonlyif ipconfig           ^
+ "VirtualBox Host-Only Ethernet Adapter" ^
+--ip 192.168.56.1                        ^
+--netmask 255.255.255.0
+::
+:: --nic1 nat              First adapter uses NAT for internet access
+:: --nic-type1 82545EM     Intel PRO/1000 MT Server network adapter for high 
+::                         performance
+:: --cable-connected1 on   Ensures NAT adapter is connected
+:: --nic2 hostonly         Second adapter for VM-to-VM communication
+:: --nic-type2 82545EM     Intel PRO/1000 MT Server for host-only network
+:: --cable-connected2 on   Ensures host-only adapter is connected
+:: --host-only-adapter2    Specifies which host-only interface to use 
+::                         (may need to be created first)
+:: 
+VBoxManage modifyvm rocky-linux-db-lab ^
+--nic1 nat                             ^
+--nic-type1 82545EM                    ^
+--cable-connected1 on                  ^
+--nic2 hostonly                        ^
+--nic-type2 82545EM                    ^
+--cable-connected2 on                  ^
+--host-only-adapter2 "VirtualBox Host-Only Ethernet Adapter"
+```
+
+Now you can boot the VM and start the guest installation using the following command, 
+which starts in GUI mode by default, taking you through a standard guest OS installer:
+
+```batch
+VBoxManage startvm rocky-linux-db-lab
+:: Waiting for VM "rocky-linux-db-lab" to power on...
+:: VM "rocky-linux-db-lab" has been successfully started.
+
+VBoxManage list --long runningvms | findstr /c:"Name:"
+:: Name:                        rocky-linux-db-lab
+```
+
+{{< figure src="/img/002/gui_installation_with_monitor.png" alt="Rocky Linux 9.6 Boot Menu" position="center" caption="Boot Menu" captionPosition="center" >}}
+
+Once you have completed the OS installation, you can cleanly shut down the VM from within the guest, 
+which causes Oracle VM VirtualBox to power off the VM was well. You can also initiate this from 
+
+Oracle VM VirtualBox using the following command, which is equivalent to briefly pressing the
+power button on a physical computer:
+
+```batch
+VBoxManage controlvm rocky-linux-db-lab acpipowerbutton
+```
+
+Operating systems that are programmed to respond to this command will shut themselves down. 
+You can forcibly shut down a VM using the following command, which is equivalent to pressing 
+and holding a computer's power button:
+
+```batch
+VBoxManage controlvm rocky-linux-db-lab poweroff
+```
+
+{{<notice tip>}}
+Finally, when the OS is installed in the guest, you can remove the DVD from the VM configuration:
+
+```batch
+VBoxManage storageattach      ^
+rocky-linux-db-lab            ^
+--storagectl "IDE Controller" ^
+--port 0                      ^
+--device 0                    ^
+--type dvddrive               ^
+--medium none
+```
+{{</notice>}}
 
 ## 2. Rocky Linux 9 Installation
 
-### 2.1. Custom Partitioning for Database Workloads
+Start the VirtualBox virtual machine with Rocky Linux 9.6 ISO mounted.
+Select "Install Rocky Linux 9.6" from the boot menu and proceed to the Installation Summary screen.
 
-#### Step 1: Boot from Rocky Linux 9.6 Installation Media
-1. Start the VirtualBox virtual machine with Rocky Linux 9.6 ISO mounted
-2. Select "Install Rocky Linux 9.6" from the boot menu
-3. Configure language and keyboard layout preferences
-4. Proceed to the Installation Summary screen
+{{< figure src="/img/002/installation_summary.png" alt="Rocky Linux 9.6 Installation Summary" position="center" caption="Installation Summary" captionPosition="center" >}}
 
-{{< figure src="/img/002_gui_installation_with_monitor.png" alt="Rocky Linux 9.6 Boot Menu" position="center" caption="Rocky Linux 9.6 Boot Menu" captionPosition="center" >}}
-
-#### Access Custom Partitioning
-1. Click on **"Installation Destination"** in the Installation Summary
-2. Select your 40 GiB virtual disk
-3. Under "Storage Configuration," select **"Custom"**
-4. Click **"Done"** to proceed to the manual partitioning interface
-
-{{< figure src="/img/002_installation_summary.png" alt="Rocky Linux 9.6 Installation Summary" position="center" caption="Rocky Linux 9.6 Installation Summary" captionPosition="center" >}}
-
-Create these partitions for optimal database performance. 
-The configuration is specifically designed[^1] for a system with 40 GiB disk space and 4 GiB RAM.
-
-[^1]: Red Hat Documentation [9.15.5. Recommended Partitioning Scheme](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/installation_guide/s2-diskpartrecommend-x86).
-
-| Mount Point     | Size   | Device Type        | File System | Purpose                       |
-|-----------------|-------:|:-------------------|:-----------:|:------------------------------|
-| `/boot`         |  1 GiB | Standard Partition | ext4        | Boot files and kernels        |
-| `swap`          |  4 GiB | Standard Partition | swap        | Virtual memory (equal to RAM) |
-| `/` (root)      |  8 GiB | LVM                | ext4        | Operating system files        |
-| `/var`          | 15 GiB | LVM                | ext4        | Database files, logs, cache   |
-| `/home`         |  5 GiB | LVM                | ext4        | User data and configurations  |
-| `/tmp`          |  2 GiB | LVM                | ext4        | Temporary files               |
-| **Unallocated** | ~5 GiB | LVM                |    -        | Reserved for future expansion |
-
-{{< figure src="/img/002_custom_partitioning.png" alt="Rocky Linux 9.6 Manual Partitioning Screen" position="center" caption="Manual Partitioning Screen" captionPosition="center" >}}
-
-#### Why Not Use Automatic Partitioning?
-
-Automatic partitioning typically creates a large root partition that may not be optimal for database workloads because:
-- Database files compete with system files for disk space
-- No isolation between different types of data
-- Limited flexibility for database-specific optimizations
-- Difficult to implement targeted backup strategies
-- Potential for database growth to impact system stability
-
-### 2.2. Installation Summary Configuration
+### 2.1. Installation Summary Configuration
 
 **Localization:**
 - **Keyboard & Language Support**: Choose the appropriate options for you
@@ -166,20 +377,61 @@ Automatic partitioning typically creates a large root partition that may not be 
 **Software:**
 - **Software Selection**: **Minimal Install** (recommended for its light-weight)
 
-**System:**
-- **Network & Host Name**: Enable both network interfaces and configure static IP for host-only adapter if needed. To configure the host-only interface, use the parameters set by **your** Oracle VM. We used `dblab.local` for the hostname.
-
-{{< figure src="/img/002_oracle_vm_host_only_network.png" alt="Oracle VM Host-Only Network Parameters" position="center" caption="Oracle VM Host-Only Network Parameters" captionPosition="center" >}}
-
-
 **User Settings > User Creation:**
-- **Username**: `dbadmin`
+- **Username**: `dba`
 - **Password**: Strong password
 - **Make this user administrator**: ✓
 
+### 2.2. Custom Partitioning for Database Workloads
+
+#### Access Custom Partitioning
+1. Click on **"Installation Destination"** in the Installation Summary
+2. Select your 40 GiB virtual disk
+3. Under "Storage Configuration," select **"Custom"**
+4. Click **"Done"** to proceed to the manual partitioning interface
+
+
+Create these partitions for optimal database performance. 
+The configuration is specifically designed[^1] for a system with 40 GiB disk space and 4 GiB RAM.
+
+[^1]: Red Hat Documentation [9.15.5. Recommended Partitioning Scheme](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/installation_guide/s2-diskpartrecommend-x86).
+
+| Mount Point     | Size   | File System | Purpose                       |
+|-----------------|-------:|:-----------:|:------------------------------|
+| `/boot`         |  1 GiB | ext4        | Boot files and kernels        |
+| `swap`          |  4 GiB | swap        | Virtual memory (equal to RAM) |
+| `/` (root)      | 10 GiB | xfs         | Operating system files        |
+| `/var`          | 20 GiB | xfs         | Database files, logs, cache   |
+| `/home`         |  3 GiB | xfs         | User data and configurations  |
+| `/tmp`          |  2 GiB | xfs         | Temporary files               |
+
+{{< figure src="/img/002/custom_partitioning.png" alt="Rocky Linux 9.6 Manual Partitioning Screen" position="center" caption="Manual Partitioning Screen" captionPosition="center" >}}
+
+{{<notice info>}}
+**Why Not Use Automatic Partitioning?**
+
+Automatic partitioning typically creates a large root partition that may not be optimal for database workloads because:
+1. Database files compete with system files for disk space
+2. No isolation between different types of data
+3. Limited flexibility for database-specific optimizations
+4. Difficult to implement targeted backup strategies
+5. Potential for database growth to impact system stability
+
+**What happens when you no longer need the VM?**
+
+The `VBoxManage unregistervm` command unregisters a virtual machine (VM).
+
+_VBoxManage unregistervm <uuid | vmname> [‑‑delete] [‑‑delete‑all]_
+
+* `--delete`       Deletes the files related to the VM automatically
+* `--delete-all`   Deletes the files described in the --delete option, as well as all DVDs and Floppy disks located in the VM folder and attached only to this VM.
+{{</notice>}}
+
+{{< figure src="/img/002/installation_process.png" alt="Rocky Linux 9.6 Installation Process" position="center" caption="Installation Process" captionPosition="center" >}}
+
 ## 3. Post-Installation Configuration
 
-{{< figure src="/img/002_first_login.png" alt="Rocky Linux 9.6 First Login Screen" position="center" caption="Rocky Linux 9.6 First Login Screen" captionPosition="center" >}}
+{{< figure src="/img/002/first_login.png" alt="Rocky Linux 9.6 First Login Screen" position="center" caption="First Login Screen" captionPosition="center" >}}
 
 ### 3.1. System Updates
 
