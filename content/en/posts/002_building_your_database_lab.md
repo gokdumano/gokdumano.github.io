@@ -35,18 +35,28 @@ Before we begin, ensure you have:
 - **Virtualization enabled** in BIOS/UEFI
 
 {{<notice info>}}
-The list of official mirrors can be found [here](https://mirrors.rockylinux.org/mirrormanager/mirrors), which is advisable for one to select the mirror that is geographically closest to them. To build our lab, the latest release of Rocky Linux 9 is preferred.
+The list of official mirrors can be found [here](https://mirrors.rockylinux.org/mirrormanager/mirrors), 
+which is advisable for one to select the mirror that is geographically closest to them. 
+To build our lab, the latest release of Rocky Linux 9 is preferred.
 {{</notice>}}
 
 ### Quick Download Commands (Windows)
 
 ```batch
 :: Download Rocky Linux 9 ISO
-curl --progress-bar --remote-name --location --output-dir %userprofile%\downloads ^
+curl                                 ^
+--progress-bar                       ^
+--remote-name                        ^
+--location                           ^
+--output-dir %userprofile%\downloads ^
 https://download.rockylinux.org/pub/rocky/9.6/isos/x86_64/Rocky-9-latest-x86_64-minimal.iso
 
 :: Verify checksum integrity
-curl --output-dir %userprofile%\downloads --output CHECKSUM --silent --location ^
+curl                                 ^
+--output CHECKSUM                    ^
+--silent                             ^
+--location                           ^
+--output-dir %userprofile%\downloads ^
 https://download.rockylinux.org/pub/rocky/9.6/isos/x86_64/Rocky-9-latest-x86_64-minimal.iso.CHECKSUM
 
 type %userprofile%\downloads\CHECKSUM
@@ -57,17 +67,31 @@ certutil -hashfile %userprofile%\downloads\Rocky-9-latest-x86_64-minimal.iso sha
 :: aed9449cf79eb2d1c365f4f2561f923a80451b3e8fdbf595889b4cf0ac6c58b8
 ```
 
-{{<notice info>}} The latest stable version of VirtualBox can be found [here](https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT). However, those who are comfortable with the 'bleeding edge' can find the latest version [here](https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT).
+{{<notice info>}}
+The latest stable version of VirtualBox can be found 
+[here](https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT). 
+However, those who are comfortable with the 'bleeding edge' can find 
+the latest version [here](https://download.virtualbox.org/virtualbox/LATEST.TXT).
 {{</notice>}}
 
 ```batch
 :: Extract what the latest stable version is
-curl --location --silent https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT
+:: as of writing this post the latest stable version is '7.1.12'
+curl       ^
+--location ^
+--silent   ^
+https://download.virtualbox.org/virtualbox/LATEST-STABLE.TXT
+:: 7.1.12 
 
 curl https://download.virtualbox.org/virtualbox/7.1.12/ | findstr /c:"Win.exe"
+:: <a href="VirtualBox-7.1.12-169651-Win.exe">VirtualBox-7.1.12-169651-Win.exe</a>  14-Jul-2025 20:31  119M
 
 :: Download Oracle VirtualBox
-curl --progress-bar --remote-name --location --output-dir %userprofile%\downloads ^
+curl                                 ^
+--progress-bar                       ^
+--remote-name                        ^
+--location                           ^
+--output-dir %userprofile%\downloads ^
 https://download.virtualbox.org/virtualbox/7.1.12/VirtualBox-7.1.12-169651-Win.exe
 ```
 
@@ -107,13 +131,13 @@ columns 1
 ```batch
 :: SET will remain only for the duration of the current CMD session.
 set "PATH=%PATH%;C:\Program Files\Oracle\VirtualBox"
-::
+
 :: To set environment variables permanently, SETX command can be used
 :: setx PATH "%PATH%;C:\Program Files\Oracle\VirtualBox"
-::
+
 VBoxManage --version
 :: 7.1.12r169651
-::
+
 VBoxManage list --long ostypes | findstr /c:"RedHat9_64"
 :: ID:               RedHat9_64
 ```
@@ -131,13 +155,24 @@ VBoxManage list --long ostypes | findstr /c:"RedHat9_64"
 :: --ostype        Specifies the guest OS to run in the VM.
 :: --register      Registers the VM with your Oracle VM VirtualBox
 ::                 installation.
-::
+
 VBoxManage createvm              ^
 --name rocky-linux-db-lab        ^
 --basefolder "E:\VirtualBox VMs" ^
 --ostype RedHat9_64              ^
 --register
 ```
+
+{{<notice tip>}}
+
+**What happens when you no longer need the VM?**
+
+The `VBoxManage unregistervm` command unregisters a virtual machine (VM).
+
+```batch 
+VBoxManage unregistervm rocky-linux-db-lab --delete-all
+```
+{{</notice>}}
 
 **Hardware:**
 - **Base Memory**: 4096 MB (4GB) minimum
@@ -167,8 +202,10 @@ rocky-linux-db-lab  ^
 - Attach Rocky Linux 9 ISO to `Controller:IDE`
 
 ```batch
+:: ====================================================================
 :: The `VBoxManage createmedium` command creates a new medium, such 
 :: as a disk image file.
+:: ====================================================================
 :: --size               Specifies the image capacity in one megabyte units.
 :: --format             Specifies the file format of the output file.
 :: --variant=Standard   The variant that has a dynamically allocated file size.
@@ -182,35 +219,49 @@ VBoxManage createmedium disk ^
 --format VDI                 ^
 --variant Standard           ^
 --filename "E:\VirtualBox VMs\rocky-linux-db-lab\rocky-linux-db-lab.vdi"
+```
+
+```batch
 :: ====================================================================
 :: The `VBoxManage storagectl` command enables you to attach, modify,
 :: and remove a storage controller.
+:: ====================================================================
 :: --name          Specifies the name of the storage controller.
 :: --add           Specifies the type of the system bus to which to connect
 ::                 the storage controller.
+:: --portcount     This specifies the number of ports the storage controller
+::                 should support.
 :: --hostiocache   Specifies whether to use the host I/O cache for all disk
 ::                 images attached to this storage controller.
 :: --bootable      Specifies whether this controller is bootable.
 :: ====================================================================
 :: Create SATA controller for the hard disk:
 :: ====================================================================
-VBoxManage storagectl    ^
-rocky-linux-db-lab       ^
---name "SATA Controller" ^
---add sata               ^
---hostiocache on         ^
+VBoxManage storagectl ^
+rocky-linux-db-lab    ^
+--name "sata01"       ^
+--add sata            ^
+--portcount 1         ^
+--hostiocache on      ^
 --bootable on
+```
+
+```batch
 :: ====================================================================
 :: Create IDE controller for the installation media:
 :: ====================================================================
-VBoxManage storagectl   ^
-rocky-linux-db-lab      ^
---name "IDE Controller" ^
+VBoxManage storagectl ^
+rocky-linux-db-lab    ^
+--name "ide01"        ^
 --add ide
+```
+
+```batch
 :: ====================================================================
 :: The `VBoxManage storageattach` command enables you to manage a storage medium
 :: that you connectedto a storage controller by using the `VBoxManage storagectl`
 :: command.
+:: ====================================================================
 :: --storagectl        Specifies the name of the storage controller. 
 :: --port              Specifies the port number of the storage controller
 ::                     to modify.
@@ -221,39 +272,26 @@ rocky-linux-db-lab      ^
 :: ====================================================================
 :: Attach the virtual hard disk:
 :: ====================================================================
-VBoxManage storageattach       ^
-rocky-linux-db-lab             ^
---storagectl "SATA Controller" ^
---port 0                       ^
---device 0                     ^
---type hdd                     ^
+VBoxManage storageattach ^
+rocky-linux-db-lab       ^
+--storagectl "sata01"    ^
+--port 0                 ^
+--device 0               ^
+--type hdd               ^
 --medium "E:\VirtualBox VMs\rocky-linux-db-lab\rocky-linux-db-lab.vdi"
+```
+
+```batch
 :: ====================================================================
 :: Attach the Rocky Linux ISO:
 :: ====================================================================
-VBoxManage storageattach      ^
-rocky-linux-db-lab            ^
---storagectl "IDE Controller" ^
---port 0                      ^
---device 0                    ^
---type dvddrive               ^
+VBoxManage storageattach ^
+rocky-linux-db-lab       ^
+--storagectl "ide01"     ^
+--port 0                 ^
+--device 0               ^
+--type dvddrive          ^
 --medium %userprofile%\downloads\Rocky-9-latest-x86_64-minimal.iso
-```
-
-**System Settings:**
-- **Boot Order**: Optical, Hard Disk
-```batch
-:: --boot1 dvd    Sets boot priority: dvd first, then disk
-:: --boot2 disk
-:: --boot3 none
-:: --boot4 none
-::
-VBoxManage modifyvm ^
-rocky-linux-db-lab  ^
---boot1 dvd         ^
---boot2 disk        ^
---boot3 none        ^
---boot4 none
 ```
 
 **Audio Settings:**
@@ -283,18 +321,24 @@ rocky-linux-db-lab  ^
 :: Check if there is any host-only network
 VBoxManage list hostonlyifs | findstr /b "Name:"
 :: Name:            VirtualBox Host-Only Ethernet Adapter
-::
+```
+
+```batch
+:: ====================================================================
 :: We can create a new Host-Only Network in case there is none:
 :: VBoxManage hostonlyif create
-::
+:: ====================================================================
 :: --ip        Specifies the IPv4 IP address for the network interface.
 :: --netmask   Specifies the IPv4 netmask of the network interface.
-::
+:: ====================================================================
 VBoxManage hostonlyif ipconfig           ^
  "VirtualBox Host-Only Ethernet Adapter" ^
 --ip 192.168.56.1                        ^
 --netmask 255.255.255.0
-::
+```
+
+```batch
+:: ====================================================================
 :: --nic1 nat              First adapter uses NAT for internet access
 :: --nic-type1 82545EM     Intel PRO/1000 MT Server network adapter for high 
 ::                         performance
@@ -304,13 +348,11 @@ VBoxManage hostonlyif ipconfig           ^
 :: --cable-connected2 on   Ensures host-only adapter is connected
 :: --host-only-adapter2    Specifies which host-only interface to use 
 ::                         (may need to be created first)
-:: 
+:: ====================================================================
 VBoxManage modifyvm rocky-linux-db-lab ^
 --nic1 nat                             ^
---nic-type1 82545EM                    ^
 --cable-connected1 on                  ^
 --nic2 hostonly                        ^
---nic-type2 82545EM                    ^
 --cable-connected2 on                  ^
 --host-only-adapter2 "VirtualBox Host-Only Ethernet Adapter"
 ```
@@ -347,19 +389,6 @@ and holding a computer's power button:
 VBoxManage controlvm rocky-linux-db-lab poweroff
 ```
 
-{{<notice tip>}}
-Finally, when the OS is installed in the guest, you can remove the DVD from the VM configuration:
-
-```batch
-VBoxManage storageattach      ^
-rocky-linux-db-lab            ^
---storagectl "IDE Controller" ^
---port 0                      ^
---device 0                    ^
---type dvddrive               ^
---medium none
-```
-{{</notice>}}
 
 ## 2. Rocky Linux 9 Installation
 
@@ -378,7 +407,7 @@ Select "Install Rocky Linux 9.6" from the boot menu and proceed to the Installat
 - **Software Selection**: **Minimal Install** (recommended for its light-weight)
 
 **User Settings > User Creation:**
-- **Username**: `dba`
+- **Username**: `dbadmin`
 - **Password**: Strong password
 - **Make this user administrator**: ✓
 
@@ -407,27 +436,30 @@ The configuration is specifically designed[^1] for a system with 40 GiB disk spa
 
 {{< figure src="/img/002/custom_partitioning.png" alt="Rocky Linux 9.6 Manual Partitioning Screen" position="center" caption="Manual Partitioning Screen" captionPosition="center" >}}
 
-{{<notice info>}}
 **Why Not Use Automatic Partitioning?**
 
 Automatic partitioning typically creates a large root partition that may not be optimal for database workloads because:
-1. Database files compete with system files for disk space
-2. No isolation between different types of data
-3. Limited flexibility for database-specific optimizations
-4. Difficult to implement targeted backup strategies
-5. Potential for database growth to impact system stability
-
-**What happens when you no longer need the VM?**
-
-The `VBoxManage unregistervm` command unregisters a virtual machine (VM).
-
-_VBoxManage unregistervm <uuid | vmname> [‑‑delete] [‑‑delete‑all]_
-
-* `--delete`       Deletes the files related to the VM automatically
-* `--delete-all`   Deletes the files described in the --delete option, as well as all DVDs and Floppy disks located in the VM folder and attached only to this VM.
-{{</notice>}}
+* Database files compete with system files for disk space
+* No isolation between different types of data
+* Limited flexibility for database-specific optimizations
+* Difficult to implement targeted backup strategies
+* Potential for database growth to impact system stability
 
 {{< figure src="/img/002/installation_process.png" alt="Rocky Linux 9.6 Installation Process" position="center" caption="Installation Process" captionPosition="center" >}}
+
+{{<notice tip>}}
+Finally, when the OS is installed in the guest, you can remove the DVD from the VM configuration:
+
+```batch
+VBoxManage storageattach ^
+rocky-linux-db-lab       ^
+--storagectl "ide01"     ^
+--port 0                 ^
+--device 0               ^
+--type dvddrive          ^
+--medium none
+```
+{{</notice>}}
 
 ## 3. Post-Installation Configuration
 
@@ -442,10 +474,13 @@ First, update the system completely:
 sudo su -
 
 # Update all packages
-dnf update --assumeyes
+dnf --assumeyes update 
 
 # Install additional useful packages
-dnf install --assumeyes wget curl vim git tree net-tools
+dnf --assumeyes group install --with-optional 'Development Tools'
+
+# Set a new hostname
+hostnamectl set-hostname dblab
 
 # Reboot to ensure kernel updates take effect
 reboot
@@ -458,50 +493,59 @@ reboot
 # Check firewall status
 systemctl status firewalld
 
-# Enable firewall
-systemctl enable firewalld
-systemctl start firewalld
+# If for some reason firewalld is not enabled on your machine, 
+# you can enable it with a simple command:
+# systemctl enable --now firewalld
 
 # Configure basic rules
+grep --silent cockpit < <(firewall-cmd --list-services) && \
 firewall-cmd --remove-service cockpit
+
+grep --silent ssh < <(firewall-cmd --list-services) || \
 firewall-cmd --add-service ssh
+
 firewall-cmd --add-port 1433/tcp  # SQL Server
 firewall-cmd --add-port 1521/tcp  # Oracle
 firewall-cmd --add-port 3306/tcp  # MySQL
 firewall-cmd --add-port 5432/tcp  # PostgreSQL
+
 firewall-cmd --runtime-to-permanent
 
 # List current rules
 firewall-cmd --list-all
 ```
 
+{{<notice warning>}}
+By default, all changes to firewalld's configuration are temporary.
+If you restart the whole firewalld service, or restart your machine, 
+none of your changes to the firewall will be saved unless you do one 
+of two very specific things.
+
+Once you have a working configuration, you can save your changes permanently with:
+`firewall-cmd --runtime-to-permanent`
+
+However, if you're absolutely sure about what you're doing, and just want to add the
+rule and move on with your life, you can add the `--permanent` flag to any configuration command:
+`firewall-cmd --permanent [the rest of your command]`
+{{</notice>}}
+
 **SSH Security:**
 ```bash
 # To modify the system-wide sshd configuration, create a *.conf 
 # file under /etc/ssh/sshd_config.d/
-tee /etc/ssh/sshd_config.d/00_ssh_security &>/dev/null <<BODY
-# Created by $(whoami) at $(date +%Y-%m-%dT%H:%M:%S)
-PasswordAuthentication   yes   # for lab environment
-PermitRootLogin           no
-Port                      22   # consider changing in production
-MaxAuthTries               3
+tee /etc/ssh/sshd_config.d/00_ssh-security.conf &>/dev/null <<BODY
+# Created by [$(whoami)] at [$(date +"%Y-%m-%d %H:%M:%S")]
+PasswordAuthentication yes # for lab environment
+PermitRootLogin no
+Port 22 # consider changing in production
+MaxAuthTries 3
 BODY
 
 # Restart SSH service
 systemctl restart sshd
 
 # Check SSH service status
-systemctl is-active sshd
-```
-
-**SELinux Configuration:**
-```bash
-# Check SELinux status
-sestatus
-
-# Keep SELinux enforcing for security
-# Install SELinux management tools
-dnf install --assumeyes policycoreutils-python-utils
+systemctl status sshd
 ```
 
 ### 3.3. System Monitoring Setup
@@ -510,20 +554,19 @@ Install and configure system monitoring:
 
 ```bash
 # Installation epel source (also called repository)
-dnf install --assumeyes epel-release
+dnf --assumeyes install epel-release
 
 # Many EPEL packages require CodeReady Builder (CRB) repository
 # It is recommended to enable the CRB repository
-/user/bin/crb enable
+/usr/bin/crb enable
 
 # Install monitoring tools
-dnf install --assumeyes htop   # Interactive process viewer
-dnf install --assumeyes iotop  # Simple top-like I/O monitor
-dnf install --assumeyes iftop  # Display bandwidth usage on an interface by host
+dnf --assumeyes install htop   # Interactive process viewer
+dnf --assumeyes install iotop  # Simple top-like I/O monitor
+dnf --assumeyes install iftop  # Display bandwidth usage on an interface by host
 
 # Configure system logging
-systemctl enable rsyslog
-systemctl start rsyslog
+systemctl enable --now rsyslog
 ```
 
 ### 3.4. Network Configuration
@@ -531,106 +574,27 @@ systemctl start rsyslog
 **Configure Static IP for Host-Only Network:**
 ```bash
 # Identify network interfaces
-ip addr show
+nmcli device status
+# DEVICE    TYPE       STATE                   CONNECTION
+# enp0s3    ethernet   connected               enp0s3
+# lo        loopback   connected(externally)   lo
+# enp0s8    ethernet   disconnected            --
 
-# Configure static IP (assuming enp0s8 is host-only interface)
-vim /etc/NetworkManager/system-connections/enp0s8.nmconnection
+# We did neither configure nor enable the host-only interface,
+# so it is safe to assume `enp0s8` is host-only interface
 
-# The content of the file should looks like this in case things 
-# go smoothly in section 2.2 
-# 
-# [connection]
-# id=enp0s8
-# uuid=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-# type=ethernet
-# autoconnect-priority=-999
-# interface-name=enp0s8
-# timestamp=xxxxxxxxxx
-# zone=public
-# 
-# [ethernet]
-# 
-# [ipv4]
-# address1=192.168.168.101/28
-# gateway=192.168.168.100
-# method=manual
-# 
-# [ipv6]
-# addr-gen-mode=eui64
-# method=auto
-# 
-# [proxy]
-```
+# Configure static IP
+nmcli --pretty                \
+connection modify enp0s8      \
+ipv4.address 192.168.56.10/24 \
+ipv4.gateway 192.168.56.1     \
+ipv4.method manual            \
+connection.autoconnect yes
 
-### 3.5. Database Preparation
-
-**Create Database User and Directories:**
-```bash
-# Create database group
-groupadd dba
-
-# Create database user for postgresql
-useradd --create-home --no-user-group --gid dba postgres
-
-# Create database directories for postgresql
-mkdir -p /database/{data,backup,scripts,logs}
-chown -R dbuser:dbgroup /database
-chmod 755 /database
-```
-
-**Kernel Parameter Optimization:**
-```bash
-# Edit sysctl for database optimization
-vim /etc/sysctl.d/99-database.conf
-
-# Add these parameters:
-# Database optimization
-vm.swappiness = 1
-vm.dirty_ratio = 15
-vm.dirty_background_ratio = 5
-kernel.shmmax = 17179869184
-kernel.shmall = 4194304
-kernel.shmmni = 4096
-kernel.sem = 250 32000 100 128
-net.ipv4.ip_local_port_range = 9000 65500
-net.core.rmem_default = 262144
-net.core.rmem_max = 4194304
-net.core.wmem_default = 262144
-net.core.wmem_max = 1048576
-
-# Apply changes
-sysctl -p /etc/sysctl.d/99-database.conf
-```
-
-### 3.6. Security Best Practices
-
-**Configure Automatic Updates for Security:**
-```bash
-# Install and configure automatic updates
-dnf install -y dnf-automatic
-
-# Configure automatic security updates only
-vim /etc/dnf/automatic.conf
-# Set these values:
-# upgrade_type = security
-# apply_updates = yes
-
-# Enable automatic updates
-systemctl enable --now dnf-automatic.timer
-```
-
-**File System Security:**
-```bash
-# Set secure umask
-echo "umask 027" >> /etc/bashrc
-
-# Configure audit logging
-systemctl enable auditd
-systemctl start auditd
-
-# Add database-specific audit rules
-echo "-w /database -p rwxa -k database_access" >> /etc/audit/rules.d/database.rules
-service auditd restart
+# Show protocol addresses
+lo       UNKNOWN    127.0.0.1/8
+enp0s3   UP         10.0.2.15/24
+enp0s8   UP         192.168.56.10/24 <-- static IP of this single lab server
 ```
 
 ## 4. Verification and Testing
@@ -638,54 +602,14 @@ service auditd restart
 ### System Health Check
 ```bash
 # Check system resources
-free -h
-df -h
-lscpu
+free --human
+df --human
 
-# Verify services
-systemctl status firewalld
-systemctl status sshd
-systemctl status auditd
-
-# Check security status
-sestatus
-firewall-cmd --list-all
-
-# Test network connectivity
-ping -c 4 8.8.8.8
-nslookup google.com
-```
-
-### Performance Baseline
-```bash
 # CPU information
 lscpu
 
 # Memory information
-cat /proc/meminfo | grep -E 'MemTotal|MemFree|MemAvailable'
-
-# Disk performance test
-dd if=/dev/zero of=/tmp/test_file bs=1M count=1024 conv=fdatasync
-rm /tmp/test_file
-```
-
-## 5. VirtualBox Guest Additions (Optional)
-
-For better performance and usability:
-
-```bash
-# Install development tools
-dnf groupinstall -y "Development Tools"
-dnf install -y kernel-devel kernel-headers
-
-# Mount Guest Additions CD and install
-mkdir /mnt/cdrom
-mount /dev/cdrom /mnt/cdrom
-cd /mnt/cdrom
-./VBoxLinuxAdditions.run
-
-# Reboot to activate
-reboot
+cat /proc/meminfo | grep --extended 'MemTotal|MemFree|MemAvailable'
 ```
 
 ## What's Next?
@@ -698,24 +622,16 @@ Before we wrap up, let's ensure everything is working correctly:
 
 ```bash
 # Quick system health check
-sudo systemctl status firewalld sshd auditd
-sudo firewall-cmd --list-all
+systemctl status firewalld sshd auditd
+firewall-cmd --list-all
 free -h && df -h
 ```
 
 Your system should now show:
-- **Firewall**: Active with PostgreSQL/Oracle ports configured
+- **Firewall**: Active with DB ports configured
 - **SSH**: Secured and accessible via port 22
 - **Partitions**: Properly configured for database workloads
 - **Network**: Both NAT and host-only adapters functional
-
-### **Performance Baseline Established**
-
-We've configured essential performance parameters:
-- **Kernel tuning** optimized for database operations
-- **Memory settings** configured for high-traffic scenarios  
-- **Network parameters** tuned for database connectivity
-- **File system** optimized with proper mount options
 
 ## Looking Ahead: Your Database Journey
 
@@ -732,46 +648,4 @@ This Rocky Linux foundation opens up exciting possibilities for your database le
 - **Performance optimization** techniques and troubleshooting
 - **Security hardening** for production environments
 
-## Key Achievements
-
-✅ **Enterprise-ready OS** with Rocky Linux 9  
-✅ **Security-first approach** with proper hardening  
-✅ **Database-optimized** partitioning and kernel parameters  
-✅ **Network isolation** with proper adapter configuration  
-✅ **Monitoring foundation** with system logging and auditing  
-✅ **Scalable architecture** ready for multiple database instances  
-
-## Best Practices Summary
-
-**Security First**: Every configuration prioritized security without compromising functionality. This lab environment maintains production-like security standards.
-
-**Performance Foundation**: The kernel parameters, file system optimizations, and resource allocation create an optimal environment for database workloads.
-
-**Scalability Ready**: The partitioning scheme and network setup allow for easy expansion as your database requirements grow.
-
-## Community Engagement
-
-This setup represents a solid foundation for database learning and experimentation. For production deployments, you'll want to consider additional factors like:
-
-- Hardware redundancy and fault tolerance
-- Enterprise backup solutions
-- Compliance and regulatory requirements
-- Vendor support agreements
-
-**What database are you planning to install first?** PostgreSQL for its open-source flexibility, or perhaps Oracle for enterprise features? Share your choice and reasoning - I'd love to hear about your database journey!
-
-## Coming Up Next
-
-In our next post, **"PostgreSQL 17: From Installation to First Database"**, we'll transform this foundation into a working database server. We'll cover:
-
-- Step-by-step PostgreSQL installation
-- Initial cluster configuration
-- Creating your first database and users  
-- Essential security configurations
-- Basic performance monitoring setup
-
-This hands-on continuation will demonstrate how our carefully prepared Rocky Linux environment translates into real database capabilities.
-
----
-
-*Ready to dive into database administration? This Rocky Linux foundation is your launching pad into the world of high-performance database systems. Let's build something amazing together!*
+**What database are you planning to install first?** PostgreSQL for its open-source flexibility, or perhaps Oracle for enterprise features?
