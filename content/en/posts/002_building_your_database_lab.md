@@ -445,7 +445,7 @@ Automatic partitioning typically creates a large root partition that may not be 
 * Difficult to implement targeted backup strategies
 * Potential for database growth to impact system stability
 
-{{< figure src="/img/002/installation_process.png" alt="Rocky Linux 9.6 Installation Process" position="center" caption="Installation Process" captionPosition="center" >}}
+{{< figure src="/img/002/installation_process_ss.png" alt="Rocky Linux 9.6 Installation Process" position="center" caption="Installation Process" captionPosition="center" >}}
 
 {{<notice tip>}}
 Finally, when the OS is installed in the guest, you can remove the DVD from the VM configuration:
