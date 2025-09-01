@@ -10,7 +10,7 @@ tags = ["Rocky Linux", "VirtualBox", "DBA", "Linux Installation", "System Securi
 keywords = ["Rocky Linux 9", "VirtualBox", "database lab setup", "DBA environment", "Linux installation", "system security", "network configuration", "PostgreSQL setup", "Oracle database", "virtual machine"]
 description = "Complete guide to setting up Rocky Linux 9 on Oracle VirtualBox for database environments. Includes security hardening, network configuration, and performance optimization for DBAs."
 
-toc = true
+toc = false
 showFullContent = false
 slug = "rocky-linux-9-virtualbox-database-lab-setup"
 canonical = "https://gokdumano.github.io/posts/rocky-linux-9-virtualbox-database-lab-setup/"
@@ -406,10 +406,10 @@ Select "Install Rocky Linux 9.6" from the boot menu and proceed to the Installat
 **Software:**
 - **Software Selection**: **Minimal Install** (recommended for its light-weight)
 
-**User Settings > User Creation:**
-- **Username**: `dbadmin`
-- **Password**: Strong password
-- **Make this user administrator**: ✓
+**User Settings > Root Password:**
+- **Root Password**: Strong password
+- **Lock root account**: ✗ (later to be disabled)
+- **Allow root SSH login with password**: ✗
 
 ### 2.2. Custom Partitioning for Database Workloads
 
@@ -470,9 +470,6 @@ rocky-linux-db-lab       ^
 First, update the system completely:
 
 ```bash
-# Switch to root
-sudo su -
-
 # Update all packages
 dnf --assumeyes update 
 
@@ -531,14 +528,49 @@ rule and move on with your life, you can add the `--permanent` flag to any confi
 
 **SSH Security:**
 ```bash
+# Create DBA group
+groupadd dbadmin
+
+# User management
+useradd postgres --gid dbadmin --groups wheel --create-home --no-user-group 
+useradd oracle   --gid dbadmin --groups wheel --create-home --no-user-group 
+useradd mysql    --gid dbadmin --groups wheel --create-home --no-user-group 
+useradd mssql    --gid dbadmin --groups wheel --create-home --no-user-group 
+
+passwd postgres
+passwd oracle
+passwd mysql
+passwd mssql
+
+tee --append /etc/pam.d/login 1>/dev/null <<BODY
+# Added by [$(whoami)] at [$(date +%Y-%m-%dT%H:%M:%S)]
+# The line below allows groups listed in 'groups.allow' to access to login service
+auth required pam_listfile.so item=group sense=allow file=/etc/pam.d/groups.allow onerr=fail
+# The line below disallow the 'root' user to access to login service
+auth required pam_listfile.so item=user sense=deny file=/etc/pam.d/users.deny onerr=succeed
+BODY
+
+tee /etc/pam.d/groups.allow 1>/dev/null <<BODY
+dbadmin
+BODY
+
+tee /etc/pam.d/users.deny 1>/dev/null <<BODY
+root
+BODY
+
+# Also set the required permissions on this.
+chmod 600 /etc/pam.d/groups.allow
+chmod 600 /etc/pam.d/users.deny
+
 # To modify the system-wide sshd configuration, create a *.conf 
 # file under /etc/ssh/sshd_config.d/
-tee /etc/ssh/sshd_config.d/00_ssh-security.conf &>/dev/null <<BODY
+tee /etc/ssh/sshd_config.d/00_ssh_security.conf 1>/dev/null <<BODY
 # Created by [$(whoami)] at [$(date +"%Y-%m-%d %H:%M:%S")]
 PasswordAuthentication yes # for lab environment
 PermitRootLogin no
 Port 22 # consider changing in production
 MaxAuthTries 3
+AllowGroups dbadmin
 BODY
 
 # Restart SSH service
@@ -564,9 +596,6 @@ dnf --assumeyes install epel-release
 dnf --assumeyes install htop   # Interactive process viewer
 dnf --assumeyes install iotop  # Simple top-like I/O monitor
 dnf --assumeyes install iftop  # Display bandwidth usage on an interface by host
-
-# Configure system logging
-systemctl enable --now rsyslog
 ```
 
 ### 3.4. Network Configuration
@@ -575,26 +604,26 @@ systemctl enable --now rsyslog
 ```bash
 # Identify network interfaces
 nmcli device status
-# DEVICE    TYPE       STATE                   CONNECTION
-# enp0s3    ethernet   connected               enp0s3
-# lo        loopback   connected(externally)   lo
-# enp0s8    ethernet   disconnected            --
+# DEVICE    TYPE       STATE                                     CONNECTION
+# enp0s3    ethernet   connected                                 enp0s3
+# enp0s8    ethernet   connecting (getting IP configureation)    --
+# lo        loopback   connected (externally)                    lo
 
 # We did neither configure nor enable the host-only interface,
 # so it is safe to assume `enp0s8` is host-only interface
 
 # Configure static IP
-nmcli --pretty                \
-connection modify enp0s8      \
-ipv4.address 192.168.56.10/24 \
-ipv4.gateway 192.168.56.1     \
-ipv4.method manual            \
+nmcli connection modify enp0s8 \
+ipv4.address 192.168.56.10/24  \
+ipv4.gateway 192.168.56.1      \
+ipv4.method manual             \
 connection.autoconnect yes
 
 # Show protocol addresses
-lo       UNKNOWN    127.0.0.1/8
-enp0s3   UP         10.0.2.15/24
-enp0s8   UP         192.168.56.10/24 <-- static IP of this single lab server
+ip -brief -4 address
+# lo       UNKNOWN    127.0.0.1/8
+# enp0s3   UP         10.0.2.15/24
+# enp0s8   UP         192.168.56.10/24 <-- static IP of this single lab server
 ```
 
 ## 4. Verification and Testing
@@ -622,7 +651,7 @@ Before we wrap up, let's ensure everything is working correctly:
 
 ```bash
 # Quick system health check
-systemctl status firewalld sshd auditd
+systemctl status firewalld sshd
 firewall-cmd --list-all
 free -h && df -h
 ```
