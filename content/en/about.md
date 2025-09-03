@@ -16,7 +16,7 @@ mermaid = true
 
 ## 🎯 Profile Summary
 
-Database Administrator specialized in **PostgreSQL** and **Oracle**, with expertise in **high-availability architectures**, **performance tuning**, **backup & recovery**, **monitoring**, and **security**. Experienced in implementing **Patroni** and load balancing for HA setups, as well as query optimization and **TimescaleDB** for time-series data. Skilled in automation with **Bash, Batch, and PowerShell scripting**.
+Database Administrator focused on **PostgreSQL** and **MySQL**, with expertise in **high-availability architectures**, **performance tuning**, **backup & recovery**, **monitoring**, and **security**. Experienced in implementing **Patroni** and load balancing for HA setups, as well as query optimization and **TimescaleDB** for time-series data. Skilled in automation with **Bash, Batch, and PowerShell scripting**.
 
 Currently working at **Istanbul Metropolitan Municipality (IMM)** as a DBA, ensuring database reliability, scalability, and efficiency. Additionally, experienced as a **Full Stack Developer** with a background in building scalable applications.
 

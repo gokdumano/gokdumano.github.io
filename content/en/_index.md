@@ -4,7 +4,7 @@
 
 On this page, I’ll be sharing my notes and experiences on my journey as a **Database Administrator (DBA)** and **Full Stack Developer**. This way, I aim to both track my progress and build an archive I can revisit whenever I need guidance.
 
-I am currently focusing on **PostgreSQL** and **Oracle**, improving my skills in **high availability (HA)**, **performance tuning**, **backup & recovery**.
+I am currently focusing on **PostgreSQL** and **MySQL**, improving my skills in **high availability (HA)**, **performance tuning**, **backup & recovery**.
 
 In the world of data, we are responsible for every step — from storing and protecting it to delivering it to the user. Such a comprehensive responsibility naturally requires involvement in almost all stages of the process.
 

@@ -10,6 +10,7 @@ tags = ["Rocky Linux", "VirtualBox", "DBA", "Linux Installation", "System Securi
 keywords = ["Rocky Linux 9", "VirtualBox", "database lab setup", "DBA environment", "Linux installation", "system security", "network configuration", "PostgreSQL setup", "Oracle database", "virtual machine"]
 description = "Complete guide to setting up Rocky Linux 9 on Oracle VirtualBox for database environments. Includes security hardening, network configuration, and performance optimization for DBAs."
 
+draft = true
 toc = false
 showFullContent = false
 slug = "rocky-linux-9-virtualbox-database-lab-setup"

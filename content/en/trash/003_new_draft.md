@@ -11,6 +11,7 @@ keywords= "PostgreSQL installation, Rocky Linux 9.6, database configuration, Pos
 description= "Learn how to install and configure PostgreSQL on Rocky Linux 9.6 with optimal performance settings, security hardening, and resource management for production environments."
 categories= ["Database", "PostgreSQL", "Linux", "System Administration"]
 
+draft = true
 toc = false
 showFullContent = false
 slug= "postgresql-installation-configuration-rocky-linux"

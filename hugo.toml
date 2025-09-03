@@ -2,7 +2,7 @@ baseURL                = 'https://gokdumano.github.io/'
 languageCode           = 'en-us'
 defaultContentLanguage = 'en'
 theme                  = ['re-terminal', 'notice']
-pagination.pagerSize   = 3
+pagination.pagerSize   = 10
 
 enableRobotsTXT = true
 enableGitInfo   = true
